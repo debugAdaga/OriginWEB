@@ -1,6 +1,6 @@
 const root = document.documentElement;
 const rootStyle = getComputedStyle(root);
-let vst = "2.0.50",
+let vst = "2.1.00",
     vstt = "2050";
 
 let buildProp = {};
