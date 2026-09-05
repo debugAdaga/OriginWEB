@@ -1008,6 +1008,7 @@
         background-color: #2727279d;
         padding: 15px;
         backdrop-filter: blur(20px) !important;
+-webkit-backdrop-filter: blur(20px) !important;
 
         opacity: 0;
         transition: opacity 0.2s;
