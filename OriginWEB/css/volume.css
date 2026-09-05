@@ -110,8 +110,10 @@
             position: absolute;
             z-index: 2;
             bottom: 10%;
+            left: 50%;
+            translate: -50% 0;
             height: 18px;
-            width: 100%;
+            width: 18px;
         }
 
         &::after {
