@@ -429,6 +429,27 @@ const functionWhenOpenAppInApp_settings = {
         el.addEventListener("click", toggle_hideIconText);
 
         {
+            const currentPack = localStorage.getItem("iconPack") || "exquisite_icons";
+            const items = document.querySelectorAll("#iconPackSwitch [data-iconpack]");
+
+            items.forEach((item) => {
+                item.classList.toggle("active", item.dataset.iconpack === currentPack);
+            });
+
+            const switchIconPackHandler = (e) => {
+                const target = e.target.closest("[data-iconpack]");
+                if (!target) return;
+
+                items.forEach((item) => item.classList.toggle("active", item === target));
+                setIconPack(target.dataset.iconpack);
+            };
+
+            const container = document.getElementById("iconPackSwitch");
+            container._removeHandler = switchIconPackHandler;
+            container.addEventListener("click", switchIconPackHandler);
+        }
+
+        {
             const el = document.getElementById("inputRangeIconSize");
             el.handler = function () {
                 updateAppPosNoRemove();
@@ -996,6 +1017,11 @@ const functionWhenCloseAppInApp_settings = {
         el.removeEventListener("click", el._removeHandler);
         delete el._removeHandler;
 
+        {
+            const container = document.getElementById("iconPackSwitch");
+            container.removeEventListener("click", container._removeHandler);
+            delete container._removeHandler;
+        }
         {
             const el = document.getElementById("inputRangeIconSize");
             el.removeEventListener("pointerup", el.handler);
