@@ -105,9 +105,12 @@ const functionWhenOpenAppInApp_settings = {
             } else {
                 window.removeEventListener("resize", window._addHandler);
                 delete window._addHandler;
-                document.documentElement.style.setProperty("--bg-widthPhone", `280`);
-                document.documentElement.style.setProperty("--bg-heightPhone", `617`);
-                document.documentElement.style.setProperty("--bg-borderRadiusPhone", `41px`);
+                document.documentElement.style.setProperty("--bg-widthPhone", buildProp[`${deviceType}.width`]);
+                document.documentElement.style.setProperty("--bg-heightPhone", buildProp[`${deviceType}.height`]);
+                document.documentElement.style.setProperty(
+                    "--bg-borderRadiusPhone",
+                    buildProp[`${deviceType}.borderRadius`]
+                );
                 if (currentOpeningElApp)
                     closeAppToCenterWithScript(() => {
                         updateAppPosNoRemove();
@@ -249,17 +252,17 @@ const functionWhenOpenAppInApp_settings = {
                 if (lockContent.dataset.posclock == "left") return;
                 lockContent.dataset.posclock = "left";
                 el.dataset.posclock = "left";
-                localStorage.setItem("posClock", "left");
+                localStorage.setItem(`posClock-${deviceType}`, "left");
             } else if (elRect.right >= rightEdge && Math.abs(el._currentX) > 8) {
                 if (lockContent.dataset.posclock == "right") return;
                 lockContent.dataset.posclock = "right";
                 el.dataset.posclock = "right";
-                localStorage.setItem("posClock", "right");
+                localStorage.setItem(`posClock-${deviceType}`, "right");
             } else {
                 if (lockContent.dataset.posclock == "center") return;
                 lockContent.dataset.posclock = "center";
                 el.dataset.posclock = "center";
-                localStorage.setItem("posClock", "center");
+                localStorage.setItem(`posClock-${deviceType}`, "center");
             }
         };
 
@@ -272,7 +275,7 @@ const functionWhenOpenAppInApp_settings = {
                 "--bg-lockClockTranslate",
                 `${el._currentX}px ${el._currentY}px`
             );
-            localStorage.setItem("lockClockPosition", `${el._currentX}px ${el._currentY}px`);
+            localStorage.setItem(`lockClockPosition-${deviceType}`, `${el._currentX}px ${el._currentY}px`);
         };
         el.addEventListener("pointerdown", el._pointerHandlers.down);
         el.addEventListener("pointermove", el._pointerHandlers.move);
@@ -294,7 +297,7 @@ const functionWhenOpenAppInApp_settings = {
             const scale = parseFloat(e.target.value);
             document.documentElement.style.setProperty("--bg-scaleLockContent", scale);
             scaleLockClockValue.textContent = scale.toFixed(2);
-            localStorage.setItem("scaleLockContent", scale);
+            localStorage.setItem(`scaleLockContent-${deviceType}`, scale);
         };
         scaleLockClockSlider.addEventListener("input", scaleLockClockSlider._scaleHandler);
 
@@ -305,7 +308,7 @@ const functionWhenOpenAppInApp_settings = {
             const weight = parseInt(e.target.value);
             document.documentElement.style.setProperty("--bg-fontWeightLockClock", weight);
             fontClockWeightValue.textContent = weight;
-            localStorage.setItem("fontWeightLockClock", weight);
+            localStorage.setItem(`fontWeightLockClock-${deviceType}`, weight);
         };
         fontClockWeightSlider.addEventListener("input", fontClockWeightSlider._weightHandler);
 
@@ -315,7 +318,7 @@ const functionWhenOpenAppInApp_settings = {
             colorCircle._colorHandler = (e) => {
                 const color = e.currentTarget.style.backgroundColor;
                 document.documentElement.style.setProperty("--bg-colorLockClock", color);
-                localStorage.setItem("colorLockClock", color);
+                localStorage.setItem(`colorLockClock-${deviceType}`, color);
                 document.querySelectorAll("#app_SettingsAppLockEditor .colorCircle.active").forEach((activeCircle) => {
                     activeCircle.classList.remove("active");
                 });
@@ -330,7 +333,7 @@ const functionWhenOpenAppInApp_settings = {
             fontCircle._fontHandler = (e) => {
                 const font = e.currentTarget.style.fontFamily;
                 document.documentElement.style.setProperty("--bg-fontLockClock", font);
-                localStorage.setItem("fontLockClock", font);
+                localStorage.setItem(`fontLockClock-${deviceType}`, font);
                 e.currentTarget.classList.add("active");
                 const activeFontCircles = document.querySelectorAll("#app_SettingsAppLockEditor .fontCircle.active");
                 activeFontCircles.forEach((activeCircle) => {
@@ -349,7 +352,7 @@ const functionWhenOpenAppInApp_settings = {
             const opacityPercent = parseInt(e.target.value);
             document.documentElement.style.setProperty("--bg-opacityLockClock", `${opacityPercent}%`);
             opacityLockClockValue.textContent = `${opacityPercent}%`;
-            localStorage.setItem("opacityLockClock", `${opacityPercent}%`);
+            localStorage.setItem(`opacityLockClock-${deviceType}`, `${opacityPercent}%`);
         };
         opacityLockClockSlider.addEventListener("input", opacityLockClockSlider._opacityHandler);
         {
@@ -358,7 +361,7 @@ const functionWhenOpenAppInApp_settings = {
             item.forEach((el) => {
                 el.handler = function (e) {
                     const et = e.target;
-                    const val = et.dataset.allwallpaperonstyle;
+                    const val = parseInt(et.dataset.allwallpaperonstyle);
 
                     currentWallpaperOnStyle = allWallpaperOnStyle[val];
                     currentWallpaperOffStyle = allWallpaperOffStyle[val != 2 ? 0 : val];
@@ -373,8 +376,8 @@ const functionWhenOpenAppInApp_settings = {
                     activeItem.classList.remove("active");
                     et.classList.add("active");
 
-                    localStorage.setItem("allWallpaperOnStyle", val);
-                    localStorage.setItem("aodStyle", val != 2 ? 0 : val);
+                    localStorage.setItem(`allWallpaperOnStyle-${deviceType}`, val);
+                    localStorage.setItem(`aodStyle-${deviceType}`, val != 2 ? 0 : val);
 
                     {
                         document.querySelectorAll("#app_SettingsAppAOD .itemChild.active").forEach((activeEl) => {
@@ -407,6 +410,8 @@ const functionWhenOpenAppInApp_settings = {
                 element.classList.toggle("active");
                 doubleTapOnOff = element.classList.contains("active") ? 1 : 0;
                 localStorage.setItem("turnDarkenWallpaperOff", element.classList.contains("active") ? "0" : "1");
+
+                wallpaperHome.style.opacity = doubleTapOnOff ? "" : "1";
             };
             el._removeHandler = toggle_doubleTapOnOff;
             el.addEventListener("click", toggle_doubleTapOnOff);
@@ -422,6 +427,27 @@ const functionWhenOpenAppInApp_settings = {
         };
         el._removeHandler = toggle_hideIconText;
         el.addEventListener("click", toggle_hideIconText);
+
+        {
+            const currentPack = localStorage.getItem("iconPack") || "exquisite_icons";
+            const items = document.querySelectorAll("#iconPackSwitch [data-iconpack]");
+
+            items.forEach((item) => {
+                item.classList.toggle("active", item.dataset.iconpack === currentPack);
+            });
+
+            const switchIconPackHandler = (e) => {
+                const target = e.target.closest("[data-iconpack]");
+                if (!target) return;
+
+                items.forEach((item) => item.classList.toggle("active", item === target));
+                setIconPack(target.dataset.iconpack);
+            };
+
+            const container = document.getElementById("iconPackSwitch");
+            container._removeHandler = switchIconPackHandler;
+            container.addEventListener("click", switchIconPackHandler);
+        }
 
         {
             const el = document.getElementById("inputRangeIconSize");
@@ -602,7 +628,7 @@ const functionWhenOpenAppInApp_settings = {
                 e.currentTarget.classList.add("active");
                 const style = e.currentTarget.getAttribute("data-style");
                 currentWallpaperOffStyle = allWallpaperOffStyle[style];
-                localStorage.setItem("aodStyle", style);
+                localStorage.setItem(`aodStyle-${deviceType}`, style);
             };
             allAODStyle.forEach((el) => {
                 el.addEventListener("click", allAODStyle.handler);
@@ -627,7 +653,7 @@ const functionWhenOpenAppInApp_settings = {
 
                     document.querySelector("#app_SettingsAppAOD .horizontalScroll").classList.add("notWork");
                 } else {
-                    const aodStyle = localStorage.getItem("aodStyle");
+                    const aodStyle = localStorage.getItem(`aodStyle-${deviceType}`);
                     if (aodStyle) {
                         const activeItem = document.querySelector(`[data-style='${aodStyle}']`);
                         if (activeItem) activeItem.classList.add("active");
@@ -866,6 +892,25 @@ const functionWhenOpenAppInApp_settings = {
             el.addEventListener("click", el.handle);
         }
     },
+    app_SettingsAppSystemStyle: function () {
+        {
+            //system corner radius range
+            const el = document.getElementById("inputRangeSystemCornerRadius");
+
+            el.handler = function (e) {
+                const radius = parseInt(e.target.value);
+                document.documentElement.style.setProperty("--bg-systemCornerRadius", `${radius}px`);
+
+                //--bg-borderRadiusSys in root.css
+
+                root.style.setProperty("--bg-borderRadiusSys", `${radius}px`);
+
+                localStorage.setItem("systemCornerRadius", radius);
+            };
+
+            el.addEventListener("input", el.handler);
+        }
+    },
 };
 const functionWhenCloseAppInApp_settings = {
     app_SettingsAppDisplayAndBrightness: function () {
@@ -956,15 +1001,27 @@ const functionWhenCloseAppInApp_settings = {
         }
     },
     app_SettingsAppHomeLockSettings: function () {
-        const el = document.getElementById("toggle_doubleTapOnOff");
-        el.removeEventListener("click", el._removeHandler);
-        delete el._removeHandler;
+        {
+            const el = document.getElementById("toggle_doubleTapOnOff");
+            el.removeEventListener("click", el._removeHandler);
+            delete el._removeHandler;
+        }
+        {
+            const el = document.getElementById("toggle_turnDarkenWallpaperOff");
+            el.removeEventListener("click", el._removeHandler);
+            delete el._removeHandler;
+        }
     },
     app_SettingsAppIcon: function () {
         const el = document.getElementById("toggle_hideIconText");
         el.removeEventListener("click", el._removeHandler);
         delete el._removeHandler;
 
+        {
+            const container = document.getElementById("iconPackSwitch");
+            container.removeEventListener("click", container._removeHandler);
+            delete container._removeHandler;
+        }
         {
             const el = document.getElementById("inputRangeIconSize");
             el.removeEventListener("pointerup", el.handler);
@@ -1142,6 +1199,14 @@ const functionWhenCloseAppInApp_settings = {
             delete el.handle;
         }
     },
+    app_SettingsAppSystemStyle: function () {
+        {
+            //system corner radius range
+            const el = document.getElementById("inputRangeSystemCornerRadius");
+            el.removeEventListener("pointerup", el.handler);
+            delete el.handler;
+        }
+    },
 };
 
 function wallpaperSetOptions(e) {
@@ -1212,7 +1277,7 @@ function setWallpaperOption(bgImg) {
 
                 document.documentElement.style.setProperty("--bg-colorLockClock", color);
 
-                localStorage.setItem("colorLockClock", color);
+                localStorage.setItem(`colorLockClock-${deviceType}`, color);
 
                 document.querySelectorAll("#app_SettingsAppLockEditor .colorCircle.active").forEach((activeCircle) => {
                     activeCircle.classList.remove("active");
