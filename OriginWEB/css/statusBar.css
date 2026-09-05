@@ -32,6 +32,11 @@
             border-block: none;
             border-inline: none;
 
+            .status-battery {
+                box-shadow: none;
+                border: none;
+            }
+
             .clockMain {
                 margin-left: 0 !important;
             }
