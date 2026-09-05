@@ -166,13 +166,13 @@
     opacity: 0.9;
 }
 
-/* ===== КРУГЛАЯ БАТАРЕЯ С БЕЛОЙ ЗАЛИВКОЙ И ЧЁРНЫМ ТЕКСТОМ ===== */
+/* ===== ОВАЛЬНАЯ БАТАРЕЯ (СЛЕГКА РАСТЯНУТА В ШИРИНУ) ===== */
 .status-battery {
     position: relative;
     display: flex;
     margin-right: calc(0.09px * var(--bg-widthPhone));
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 20px;
     border-radius: 50%;
     align-items: center;
     justify-content: center;
@@ -184,11 +184,11 @@
 
 .containerBattery {
     position: relative;
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 14px;
     border-radius: 50%;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 /* Заливка батареи - БЕЛАЯ */
@@ -214,7 +214,7 @@
     display: flex;
     position: absolute;
     font-family: "gf_Roboto_Flex variant0", Helvetica, "SF Pro Display", sans-serif;
-    font-size: 9px;
+    font-size: 8px;
     color: #000000;
     justify-content: center;
     align-items: center;
@@ -300,16 +300,16 @@
     }
     
     .status-battery {
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 16px;
     }
     
     .containerBattery {
-        width: 14px;
-        height: 14px;
+        width: 17px;
+        height: 11px;
     }
     
     .batteryNum {
-        font-size: 7px;
+        font-size: 6px;
     }
 }
