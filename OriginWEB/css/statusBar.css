@@ -4,16 +4,9 @@
     height: var(--statusBar-height);
     width: 100%;
     color: rgb(255, 255, 255);
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0) 70%);
+    background: linear-gradient(to bottom, #00000050, #00000000);
     z-index: 9999;
     cursor: grab;
-    backdrop-filter: blur(0px);
-    transition: background 0.4s ease;
-}
-
-/* При наведении на статус-бар легкое затемнение */
-#statusBar:hover {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 70%);
 }
 
 .phone.computerMode {
@@ -33,15 +26,12 @@
             margin-inline: var(--nav-padding);
 
             background: rgba(255, 255, 255, calc(var(--bg-liquidOpacity) + 20%));
-            backdrop-filter: blur(12px) saturate(1.4);
-            box-shadow: 
-                inset 1px 1px 3px rgba(255, 255, 255, 0.3),
-                0 4px 12px rgba(0, 0, 0, 0.1);
+            backdrop-filter: brightness(0.98);
+            box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.3);
             border-top: solid 1px rgba(255, 255, 255, 0.4);
             border-bottom: solid 1px transparent;
             border-block: none;
             border-inline: none;
-            transition: all 0.3s ease;
 
             .clockMain {
                 margin-left: 0 !important;
@@ -61,7 +51,6 @@
                 box-shadow: none !important;
                 border-top: none !important;
                 border-bottom: none !important;
-                backdrop-filter: none !important;
             }
         }
     }
@@ -75,7 +64,7 @@
     justify-content: flex-end;
     pointer-events: all;
     backdrop-filter: blur(0px);
-    background: rgba(0, 0, 0, 0);
+    background: rgb(0, 0, 0, 0);
     z-index: 2;
     position: absolute;
 }
@@ -94,106 +83,115 @@
     position: absolute;
     justify-content: flex-end;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
     pointer-events: all;
     transition: all calc(0.6s * var(--bg-speedAnimation));
     height: var(--statusBar-height);
-    padding: 0 8px;
-    border-radius: 20px;
-}
-
-/* Эффект стекла для итемов статус-бара */
-.itemStatus {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(8px) saturate(1.2);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-    padding: 0 12px !important;
-    transition: all 0.3s ease;
-}
-
-.itemStatus:hover {
-    background: rgba(255, 255, 255, 0.18);
-    border-color: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(12px) saturate(1.4);
 }
 
 .itemStatus > * {
     flex: 0 0 auto;
 }
 
+/* ===== ИКОНКИ СТАТУС-БАРА ===== */
 #statusBar svg {
-    height: 14px;
-    width: 14px;
+    height: 18px;
+    width: 18px;
     fill: white;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
-    transition: transform 0.2s ease, fill 0.3s ease;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+    transition: transform 0.2s ease;
 }
 
 #statusBar svg:hover {
     transform: scale(1.15);
-    fill: #f0f0ff;
 }
 
-/* Часы в статус-баре */
+/* Специально для иконки SIM-карты делаем толще */
+#status_sim {
+    height: 16px !important;
+    width: 22px !important;
+}
+
+#status_sim path {
+    stroke: white;
+    stroke-width: 1.5px;
+}
+
+/* Для иконки Wi-Fi/сигнала делаем жирнее */
+#statusBar .right svg:not(#status_sim):not(.status-battery *) {
+    height: 19px;
+    width: 19px;
+    stroke: white;
+    stroke-width: 1.2px;
+}
+
+/* Иконка Wi-Fi с жирными линиями */
+#statusBar .right svg path {
+    stroke: white;
+    stroke-width: 1.8px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ===== ЧАСЫ ===== */
 #statusClock {
     display: flex;
     margin-left: calc(0.07px * var(--bg-widthPhone));
     font-family: "Fredoka", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
     color: #ffffff;
-    opacity: 0.95;
 }
 
 #networkName {
     display: none;
     margin-left: 20px;
     font-family: "Fredoka", "SF Pro Display", sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0.85;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+    opacity: 0.9;
 }
 
 #networkName2 {
     display: none;
     font-family: "Fredoka", "SF Pro Display", sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0.85;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+    opacity: 0.9;
 }
 
-/* ===== БАТАРЕЯ ===== */
+/* ===== БАТАРЕЯ (улучшенная) ===== */
 .status-battery {
     position: relative;
     display: flex;
     margin-right: calc(0.09px * var(--bg-widthPhone));
-    width: 22px;
-    height: 11px;
-    background: rgba(60, 60, 60, 0.35);
+    width: 26px;
+    height: 13px;
+    background: rgba(60, 60, 60, 0.3);
     border-radius: 4px;
     align-items: center;
     justify-content: center;
-    color: rgb(42, 42, 42);
     transition: all 0.5s ease;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Маленький выступ у батареи */
+/* Маленький выступ у батареи (жирнее) */
 .batterySmall {
     position: absolute;
     right: 0;
-    translate: calc(100% - 0px) 0;
-    width: 2px;
-    height: 5px;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    background: rgba(255, 255, 255, 0.7);
+    translate: calc(100% - 1px) 0;
+    width: 3px;
+    height: 6px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    background: rgba(255, 255, 255, 0.8);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -202,56 +200,41 @@
     height: 100%;
     width: calc(100%);
     background: linear-gradient(135deg, #4ade80, #22c55e);
-    border-radius: 3px;
-    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.5s ease;
-}
-
-/* Цвет батареи при низком заряде */
-.status-battery[data-level="low"] .batteryLevel {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-}
-
-.status-battery[data-level="critical"] .batteryLevel {
-    background: linear-gradient(135deg, #f87171, #ef4444);
-    animation: batteryPulse 1.2s ease-in-out infinite;
-}
-
-@keyframes batteryPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    border-radius: 2px;
+    transition: width 0.6s ease;
 }
 
 .containerBattery {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
-/* Цифра процентов внутри батареи */
+/* Процент внутри батареи - жирный шрифт */
 .batteryNum {
     display: flex;
     position: absolute;
     font-family: "gf_Roboto_Flex variant0", Helvetica, "SF Pro Display", sans-serif;
-    font-size: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.95);
     justify-content: center;
     align-items: center;
-    font-weight: 800;
+    font-weight: 900;
     font-stretch: 25%;
     font-optical-sizing: auto;
     font-variation-settings: "XTRA" 323;
     font-style: normal;
     inset: 0;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
     letter-spacing: 0px;
 }
 
-/* Анимация появления статус-бара */
+/* ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ===== */
 @keyframes statusBarSlideDown {
     from {
         opacity: 0;
-        transform: translateY(-12px);
+        transform: translateY(-10px);
     }
     to {
         opacity: 1;
@@ -260,7 +243,7 @@
 }
 
 #statusBar {
-    animation: statusBarSlideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: statusBarSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 /* ===== АДАПТИВ ===== */
@@ -268,24 +251,33 @@
     #statusBar .right .itemStatus,
     #statusBar .left .itemStatus {
         gap: 5px;
-        padding: 0 4px;
     }
     
     #statusBar svg {
-        height: 11px;
-        width: 11px;
+        height: 15px;
+        width: 15px;
+    }
+    
+    #status_sim {
+        height: 13px !important;
+        width: 18px !important;
     }
     
     #statusClock {
-        font-size: 11px;
+        font-size: 13px;
     }
     
     .status-battery {
-        width: 18px;
-        height: 9px;
+        width: 20px;
+        height: 10px;
     }
     
     .batteryNum {
         font-size: 7px;
+    }
+    
+    .batterySmall {
+        height: 4px;
+        width: 2px;
     }
 }
