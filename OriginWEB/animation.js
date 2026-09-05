@@ -283,7 +283,6 @@ function closeAppToLeft() {
 
 function isVisuallyInsidePhone(el) {
     const e = el.getBoundingClientRect();
-
     return !(
         e.left >= phoneRect.left &&
         e.top >= phoneRect.top &&
@@ -636,6 +635,7 @@ function openAppByIDFromCameraBtn(idApp) {
         }, OPEN_CAMERA_TIMEOUT * speed);
     }
 }
+
 function cancelIfAnimating(el) {
     if (!el) return false;
 
@@ -649,4 +649,106 @@ function cancelIfAnimating(el) {
     el.offsetHeight;
 
     return true;
+}
+
+// ============================================
+// ===== AI — подсветка краёв экрана =====
+// ============================================
+
+function initAI() {
+    // Ищем навигацию — может быть #nav или #n_container
+    const navBar = document.getElementById('nav') || document.querySelector('#n_container');
+    const aiOverlay = document.querySelector('.ai');
+    
+    if (!navBar || !aiOverlay) {
+        console.warn('AI: nav or ai overlay not found');
+        return;
+    }
+
+    let aiTimer = null;
+    let aiActive = false;
+    let touchStartTime = 0;
+
+    function activateAI() {
+        if (aiActive) return;
+        aiActive = true;
+        aiOverlay.classList.add('active');
+        
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+        
+        // Автоматическая деактивация через 3 секунды
+        setTimeout(() => {
+            deactivateAI();
+        }, 3000);
+    }
+
+    function deactivateAI() {
+        aiActive = false;
+        aiOverlay.classList.remove('active');
+        if (navigator.vibrate) {
+            navigator.vibrate(20);
+        }
+    }
+
+    function clearAITimer() {
+        if (aiTimer) {
+            clearTimeout(aiTimer);
+            aiTimer = null;
+        }
+    }
+
+    // Touch события
+    navBar.addEventListener('touchstart', (e) => {
+        touchStartTime = Date.now();
+        clearAITimer();
+        aiTimer = setTimeout(() => {
+            activateAI();
+        }, 3000);
+    });
+
+    navBar.addEventListener('touchend', () => {
+        clearAITimer();
+    });
+
+    navBar.addEventListener('touchmove', () => {
+        clearAITimer();
+    });
+
+    // Mouse события
+    navBar.addEventListener('mousedown', () => {
+        clearAITimer();
+        aiTimer = setTimeout(() => {
+            activateAI();
+        }, 3000);
+    });
+
+    navBar.addEventListener('mouseup', () => {
+        clearAITimer();
+    });
+
+    navBar.addEventListener('mouseleave', () => {
+        clearAITimer();
+    });
+
+    // Клик по оверлею — деактивация
+    aiOverlay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deactivateAI();
+    });
+
+    // Деактивация при нажатии на любое другое место
+    document.addEventListener('click', (e) => {
+        if (aiActive && !e.target.closest('.ai')) {
+            deactivateAI();
+        }
+    });
+}
+
+// Запускаем AI после загрузки DOM
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAI);
+} else {
+    initAI();
 }
