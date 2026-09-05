@@ -692,6 +692,21 @@ function applyIconBackgroundBySize(icon, sizeKey, setForPreviewIcon = false) {
     return true;
 }
 
+function setIconPack(pack) {
+    if (pack !== "exquisite_icons" && pack !== "flat_icons") return;
+
+    iconType = pack;
+    localStorage.setItem("iconPack", pack);
+
+    const favIcons = favApp ? favApp.querySelectorAll(".iconApp") : [];
+    const allIcons = [...document.querySelectorAll(".iconApp"), ...favIcons];
+
+    allIcons.forEach((icon) => {
+        const sizeKey = icon.dataset.size || "1x1";
+        applyIconBackgroundBySize(icon, sizeKey);
+    });
+}
+
 function extendIcon(icon, rowSpan = 1, colSpan = 2) {
     const sizeKey = `${rowSpan}x${colSpan}`;
 
