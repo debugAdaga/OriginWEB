@@ -150,6 +150,7 @@ function updateTransformS2(y) {
     const ccO = Math.min(Math.max(0, y / 50), 1);
     controlCenter.style.backdropFilter = `blur(${ccO * 20}px) brightness(${1 - 0.41 * ccO})`;
 }
+/* ================= CORE ================= */
 function startDrag_cc(slider, clientY) {
     isDragging_cc = true;
     startY_cc = clientY;
@@ -200,6 +201,7 @@ function endDrag_cc(slider) {
         controlCenter.style.backdropFilter = ``;
     }
 }
+/* ================= POINTER HANDLERS ================= */
 function onPointerMove_cc(e) {
     moveDrag_cc(statusBarRight, e.clientY);
 }
@@ -209,6 +211,7 @@ function onPointerUp_cc(e) {
 function onPointerDown_cc(e) {
     startDrag_cc(statusBarRight, e.clientY);
 }
+/* ================= EVENT CONTROL ================= */
 function addEventListener_cc() {
     document.addEventListener("pointermove", onPointerMove_cc);
     document.addEventListener("pointerup", onPointerUp_cc);
@@ -221,6 +224,7 @@ function removeEventListener_cc() {
     document.removeEventListener("pointercancel", onPointerUp_cc);
     statusBarRight.removeEventListener("pointerdown", onPointerDown_cc);
 }
+/* ================= EVENT CONTROL WHEN OPEN ================= */
 function dampY_ccOpen(y) {
     return y <= 100 ? y : 100 + (y - 100) * 0.2;
 }
@@ -363,6 +367,7 @@ function removeEventListener_ccOpen() {
     controlCenter.removeEventListener("pointerdown", onPointerDown_ccOpen);
 }
 
+// == addition ===
 const CC_LAYOUT_STORAGE_KEY = "ccLayout_v1";
 const ccReduceMotion =
     (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
@@ -615,6 +620,8 @@ function animateCCAddFromStore(newItem, fromRect) {
     });
 }
 
+/* ================= TRANSFORM ================= */
+/* ================= INIT ================= */
 addEventListener_cc();
 let value_volume = 50;
 let value_brightness = 100;
@@ -746,233 +753,685 @@ function applyScaleBrightness_brightness(rawValue, dtSec, recoverOnInside) {
 }
 function volMouseDown(e) {
     if (ccIsDragging) return;
-    if (!sliderVolume_volume) {
-        refreshCCSliderRefs();
-        if (!sliderVolume_volume) return;
-    }
-    const rect = sliderInVolume_volume.getBoundingClientRect();
-    sliderHeight_volume = rect.height;
+    if (!sliderVolume_volume || !sliderInVolume_volume) return;
+    isDragging_volume = true;
     startY_volume = e.clientY;
     startValue_volume = value_volume;
-    isDragging_volume = true;
+    sliderHeight_volume = sliderVolume_volume.getBoundingClientRect().height || 1;
     lastY_volume = e.clientY;
-    lastT_volume = performance.now();
+    lastT_volume = e.timeStamp || performance.now();
     velocity_volume = 0;
     rawValue_volume = value_volume;
-    if (inertiaActive_volume) {
-        cancelAnimationFrame(inertiaRaf_volume);
-        inertiaActive_volume = false;
+    inertiaActive_volume = false;
+    overshootTime_volume = 0;
+    overshootLastT_volume = lastT_volume;
+    wasOvershoot_volume = false;
+    if (inertiaRaf_volume) cancelAnimationFrame(inertiaRaf_volume);
+    sliderVolume_volume.style.transition = "all 0.08s";
+    sliderVolume_volume.setPointerCapture(e.pointerId);
+    e.preventDefault();
+    e.stopPropagation();
+}
+function volMouseMove(e) {
+    if (!isDragging_volume || !sliderVolume_volume || !sliderInVolume_volume) return;
+    const delta = startY_volume - e.clientY;
+    rawValue_volume = startValue_volume + (delta / sliderHeight_volume) * 100;
+    const clamped = Math.min(100, Math.max(0, rawValue_volume));
+    value_volume = clamped;
+    syncVolumeValueToUI_volume(clamped);
+    const nowT = e.timeStamp || performance.now(),
+        dtOver = (nowT - overshootLastT_volume) / 1000;
+    overshootLastT_volume = nowT;
+    applyScaleVolume_volume(rawValue_volume, dtOver, false);
+    const now = e.timeStamp || performance.now(),
+        dt = Math.max(1, now - lastT_volume),
+        dy = lastY_volume - e.clientY,
+        deltaValue = (dy / sliderHeight_volume) * 100;
+    velocity_volume = deltaValue / dt;
+    lastY_volume = e.clientY;
+    lastT_volume = now;
+    e.preventDefault();
+    e.stopPropagation();
+}
+function volMouseUp() {
+    if (!isDragging_volume || !sliderVolume_volume) return;
+    isDragging_volume = false;
+    inertiaActive_volume = true;
+    const minVelocity = 0.005,
+        friction = 0.8;
+    let lastTime = performance.now();
+    const step = (t) => {
+        if (!inertiaActive_volume) return;
+        const dt = Math.max(1, t - lastTime);
+        lastTime = t;
+        rawValue_volume += velocity_volume * dt;
+        const inOvershoot_volume = rawValue_volume > 100 || rawValue_volume < 0;
+        const frictionEffective_volume = inOvershoot_volume ? (friction * friction) / 1.5 : friction;
+        velocity_volume *= Math.pow(frictionEffective_volume, dt / 16);
+        const clamped = Math.min(100, Math.max(0, rawValue_volume));
+        value_volume = clamped;
+        syncVolumeValueToUI_volume(clamped);
+        applyScaleVolume_volume(rawValue_volume, dt / 1000, true);
+        if (Math.abs(velocity_volume) < minVelocity) {
+            inertiaActive_volume = false;
+            rawValue_volume = value_volume;
+            applyScaleVolume_volume(rawValue_volume, 0, true);
+            return;
+        }
+        inertiaRaf_volume = requestAnimationFrame(step);
+    };
+    inertiaRaf_volume = requestAnimationFrame(step);
+}
+function briMouseDown(e) {
+    if (ccIsDragging) return;
+    if (!sliderBrightness_brightness || !sliderInBrightness_brightness) return;
+    isDragging_brightness = true;
+    startY_brightness = e.clientY;
+    startValue_brightness = value_brightness;
+    sliderHeight_brightness = sliderBrightness_brightness.getBoundingClientRect().height || 1;
+    lastY_brightness = e.clientY;
+    lastT_brightness = e.timeStamp || performance.now();
+    velocity_brightness = 0;
+    rawValue_brightness = value_brightness;
+    inertiaActive_brightness = false;
+    overshootTime_brightness = 0;
+    overshootLastT_brightness = lastT_brightness;
+    wasOvershoot_brightness = false;
+    if (inertiaRaf_brightness) cancelAnimationFrame(inertiaRaf_brightness);
+    sliderBrightness_brightness.style.transition = "all 0.08s";
+    sliderBrightness_brightness.setPointerCapture(e.pointerId);
+    e.preventDefault();
+    e.stopPropagation();
+}
+function briMouseMove(e) {
+    if (!isDragging_brightness || !sliderBrightness_brightness || !sliderInBrightness_brightness) return;
+    const delta = startY_brightness - e.clientY,
+        min = 20,
+        max = 100,
+        range = max - min;
+    rawValue_brightness = startValue_brightness + (delta / sliderHeight_brightness) * range;
+    const clamped = Math.min(max, Math.max(min, rawValue_brightness));
+    value_brightness = clamped;
+    const visualPercent = ((clamped - min) / range) * 100;
+    sliderInBrightness_brightness.style.height = `${visualPercent}%`;
+    const nowT = e.timeStamp || performance.now(),
+        dtOver = (nowT - overshootLastT_brightness) / 1000;
+    overshootLastT_brightness = nowT;
+    applyScaleBrightness_brightness(rawValue_brightness, dtOver, false);
+    const now = e.timeStamp || performance.now(),
+        dt = Math.max(1, now - lastT_brightness),
+        dy = lastY_brightness - e.clientY,
+        deltaValue = (dy / sliderHeight_brightness) * range;
+    velocity_brightness = deltaValue / dt;
+    lastY_brightness = e.clientY;
+    lastT_brightness = now;
+    e.preventDefault();
+    e.stopPropagation();
+}
+function briMouseUp() {
+    if (!isDragging_brightness || !sliderBrightness_brightness) return;
+    isDragging_brightness = false;
+    inertiaActive_brightness = true;
+    const min = 20,
+        max = 100,
+        range = max - min,
+        minVelocity = 0.005,
+        friction = 0.8;
+    let lastTime = performance.now();
+    const step = (t) => {
+        if (!inertiaActive_brightness) return;
+        const dt = Math.max(1, t - lastTime);
+        lastTime = t;
+        rawValue_brightness += velocity_brightness * dt;
+        const inOvershoot_brightness = rawValue_brightness > max || rawValue_brightness < min;
+        const frictionEffective_brightness = inOvershoot_brightness ? (friction * friction) / 1.5 : friction;
+        velocity_brightness *= Math.pow(frictionEffective_brightness, dt / 16);
+        const clamped = Math.min(max, Math.max(min, rawValue_brightness));
+        value_brightness = clamped;
+        const visualPercent = ((clamped - min) / range) * 100;
+        sliderInBrightness_brightness.style.height = `${visualPercent}%`;
+        applyScaleBrightness_brightness(rawValue_brightness, dt / 1000, true);
+        if (Math.abs(velocity_brightness) < minVelocity) {
+            inertiaActive_brightness = false;
+            rawValue_brightness = value_brightness;
+            applyScaleBrightness_brightness(rawValue_brightness, 0, true);
+            return;
+        }
+        inertiaRaf_brightness = requestAnimationFrame(step);
+    };
+    inertiaRaf_brightness = requestAnimationFrame(step);
+}
+/* ----------------------
+   REMOVE EVENT LISTENERS
+   ---------------------- */
+function addDragVolumeAndBrightnessEvents() {
+    refreshCCSliderRefs();
+    syncVolumeValueToUI_volume(value_volume);
+    if (sliderInBrightness_brightness) {
+        const min = 20,
+            max = 100,
+            range = max - min,
+            visualPercent = ((value_brightness - min) / range) * 100;
+        sliderInBrightness_brightness.style.height = `${Math.min(100, Math.max(0, visualPercent))}%`;
     }
-    sliderVolume_volume.style.transition = "none";
-    sliderInVolume_volume.style.transition = "none";
-    if (e.pointerId !== undefined) sliderVolume_volume.setPointerCapture(e.pointerId);
+    if (sliderVolume_volume) sliderVolume_volume.addEventListener("pointerdown", volMouseDown);
+    if (sliderBrightness_brightness) sliderBrightness_brightness.addEventListener("pointerdown", briMouseDown);
     document.addEventListener("pointermove", volMouseMove);
     document.addEventListener("pointerup", volMouseUp);
     document.addEventListener("pointercancel", volMouseUp);
+    document.addEventListener("pointermove", briMouseMove);
+    document.addEventListener("pointerup", briMouseUp);
+    document.addEventListener("pointercancel", briMouseUp);
 }
-function volMouseMove(e) {
-    if (!isDragging_volume) return;
-    const now = performance.now();
-    const dt = Math.min(now - lastT_volume, 100) / 1000;
-    lastT_volume = now;
-    const dy = -(e.clientY - lastY_volume);
-    lastY_volume = e.clientY;
-    const sensitivity = 0.8;
-    const deltaValue = (dy / sliderHeight_volume) * 100 * sensitivity;
-    rawValue_volume = Math.max(-10, Math.min(110, rawValue_volume + deltaValue));
-    const clampedValue = Math.max(0, Math.min(100, rawValue_volume));
-    value_volume = clampedValue;
-    syncVolumeValueToUI_volume(clampedValue);
-    applyScaleVolume_volume(rawValue_volume, dt, false);
-    if (typeof window.vmSetVolume === "function") window.vmSetVolume(value_volume);
-}
-function volMouseUp(e) {
-    if (!isDragging_volume) return;
-    isDragging_volume = false;
+function removeDragVolumeAndBrightnessEvents() {
+    if (sliderVolume_volume) sliderVolume_volume.removeEventListener("pointerdown", volMouseDown);
+    if (sliderBrightness_brightness) sliderBrightness_brightness.removeEventListener("pointerdown", briMouseDown);
     document.removeEventListener("pointermove", volMouseMove);
     document.removeEventListener("pointerup", volMouseUp);
     document.removeEventListener("pointercancel", volMouseUp);
-    const finalValue = Math.max(0, Math.min(100, rawValue_volume));
-    value_volume = finalValue;
-    syncVolumeValueToUI_volume(finalValue);
-    applyScaleVolume_volume(rawValue_volume, 0, true);
-    if (typeof window.vmSetVolume === "function") window.vmSetVolume(value_volume);
+    document.removeEventListener("pointermove", briMouseMove);
+    document.removeEventListener("pointerup", briMouseUp);
+    document.removeEventListener("pointercancel", briMouseUp);
 }
-function brightMouseDown(e) {
-    if (ccIsDragging) return;
-    if (!sliderBrightness_brightness) {
-        refreshCCSliderRefs();
-        if (!sliderBrightness_brightness) return;
-    }
-    const rect = sliderInBrightness_brightness.getBoundingClientRect();
-    sliderHeight_brightness = rect.height;
-    startY_brightness = e.clientY;
-    startValue_brightness = value_brightness;
-    isDragging_brightness = true;
-    lastY_brightness = e.clientY;
-    lastT_brightness = performance.now();
-    velocity_brightness = 0;
-    rawValue_brightness = value_brightness;
-    if (inertiaActive_brightness) {
-        cancelAnimationFrame(inertiaRaf_brightness);
-        inertiaActive_brightness = false;
-    }
-    sliderBrightness_brightness.style.transition = "none";
-    sliderInBrightness_brightness.style.transition = "none";
-    if (e.pointerId !== undefined) sliderBrightness_brightness.setPointerCapture(e.pointerId);
-    document.addEventListener("pointermove", brightMouseMove);
-    document.addEventListener("pointerup", brightMouseUp);
-    document.addEventListener("pointercancel", brightMouseUp);
+closeControlsCenter();
+let ccDidDrag = false,
+    ccSuppressClickUntil = 0,
+    ccHoldTimer = null,
+    ccDragTarget = null,
+    ccPreview = null,
+    ccPreviewDropPos = null,
+    ccOriginRow = 0,
+    ccOriginCol = 0,
+    ccOriginRowEnd = 0,
+    ccOriginColEnd = 0,
+    ccStartX = 0,
+    ccStartY = 0,
+    ccLastDx = 0,
+    ccLastDy = 0,
+    ccIsDragging = false,
+    ccTempSwapState = null,
+    ccPendingRestore = null,
+    ccPendingRestorePos = null,
+    ccPreviewBaseLeft = 0,
+    ccPreviewBaseTop = 0,
+    ccGridLeft = 0,
+    ccGridTop = 0,
+    ccGridWidth = 0,
+    ccGridHeight = 0,
+    ccGridCols = 0,
+    ccGridRows = 0,
+    ccScaleX = 1,
+    ccScaleY = 1,
+    ccSlotBaseLeft = 0,
+    ccSlotBaseTop = 0,
+    ccSlotBaseWidth = 0,
+    ccSlotBaseHeight = 0,
+    ccDropOffsetX = 0,
+    ccDropOffsetY = 0,
+    ccCheckTimer = null,
+    ccDragRowSpan = 1,
+    ccDragColSpan = 1,
+    ccLastSlotRow = -1,
+    ccLastSlotCol = -1,
+    ccMoveRaf = 0,
+    ccMoveEvent = null,
+    ccDragItems = null,
+    ccRectCache = null;
+function toggleActiveItemCC(e) {
+    if (e.currentTarget.classList.contains("iitem")) e.stopPropagation();
+    if (e.currentTarget.classList.contains("nonActive")) return;
+    if (Date.now() < ccSuppressClickUntil) return;
+    e.currentTarget.classList.toggle("active");
 }
-function brightMouseMove(e) {
-    if (!isDragging_brightness) return;
-    const now = performance.now();
-    const dt = Math.min(now - lastT_brightness, 100) / 1000;
-    lastT_brightness = now;
-    const dy = -(e.clientY - lastY_brightness);
-    lastY_brightness = e.clientY;
-    const sensitivity = 0.8;
-    const deltaValue = (dy / sliderHeight_brightness) * 100 * sensitivity;
-    rawValue_brightness = Math.max(10, Math.min(110, rawValue_brightness + deltaValue));
-    const clampedValue = Math.max(20, Math.min(100, rawValue_brightness));
-    value_brightness = clampedValue;
-    if (sliderInBrightness_brightness) sliderInBrightness_brightness.style.height = `${clampedValue}%`;
-    applyScaleBrightness_brightness(rawValue_brightness, dt, false);
-    if (typeof window.vmSetBrightness === "function") window.vmSetBrightness(value_brightness);
-}
-function brightMouseUp(e) {
-    if (!isDragging_brightness) return;
-    isDragging_brightness = false;
-    document.removeEventListener("pointermove", brightMouseMove);
-    document.removeEventListener("pointerup", brightMouseUp);
-    document.removeEventListener("pointercancel", brightMouseUp);
-    const finalValue = Math.max(20, Math.min(100, rawValue_brightness));
-    value_brightness = finalValue;
-    if (sliderInBrightness_brightness) sliderInBrightness_brightness.style.height = `${finalValue}%`;
-    applyScaleBrightness_brightness(rawValue_brightness, 0, true);
-    if (typeof window.vmSetBrightness === "function") window.vmSetBrightness(value_brightness);
-}
-function addDragVolumeAndBrightnessEvents() {
-    if (sliderVolume_volume) {
-        sliderVolume_volume.addEventListener("pointerdown", volMouseDown);
+const ccLiftScale = 1.1;
+function getCCGridAreaString(el) {
+    const inline = el.style.gridArea;
+    if (inline) {
+        const parts = inline.split("/").map((p) => parseInt(p, 10));
+        if (parts.length >= 4 && parts.every((n) => !isNaN(n))) {
+            return `${parts[0]} / ${parts[1]} / ${parts[2]} / ${parts[3]}`;
+        }
     }
-    if (sliderBrightness_brightness) {
-        sliderBrightness_brightness.addEventListener("pointerdown", brightMouseDown);
-    }
+    const rect = getCCGridRect(el);
+    if (!rect) return inline || "1 / 1 / 2 / 2";
+    return `${rect.rowStart} / ${rect.colStart} / ${rect.rowEnd} / ${rect.colEnd}`;
 }
-function removeDragVolumeAndBrightnessEvents() {
-    if (sliderVolume_volume) {
-        sliderVolume_volume.removeEventListener("pointerdown", volMouseDown);
+function saveCCLayout() {
+    const items = Array.from(gridCC.querySelectorAll(":scope > .item")).filter(
+        (el) => !el.classList.contains("cc-removed") && !el.classList.contains("cc-preview")
+    );
+    if (!items.length) {
+        localStorage.setItem(CC_LAYOUT_STORAGE_KEY, "[]");
+        return;
     }
-    if (sliderBrightness_brightness) {
-        sliderBrightness_brightness.removeEventListener("pointerdown", brightMouseDown);
-    }
+    const layout = items.map((el, i) => ({
+        name: getCCName(el) || "",
+        size: getCCSize(el),
+        id: getCCItemId(el, i),
+        gridArea: getCCGridAreaString(el),
+    }));
+    localStorage.setItem(CC_LAYOUT_STORAGE_KEY, JSON.stringify(layout));
 }
-function openControlCenterDirectly() {
-    try {
-        if (!controlCenter) {
-            console.error("Control Center element not found");
+function getCCItems() {
+    return Array.from(gridCC.querySelectorAll(":scope > .item")).filter(
+        (el) => !el.classList.contains("cc-removed") && !el.classList.contains("cc-preview")
+    );
+}
+function getCCGridRect(el) {
+    if (ccRectCache && ccRectCache.has(el)) return ccRectCache.get(el);
+    const ga = el.style.gridArea;
+    if (ga) {
+        const parts = ga.split("/").map((p) => parseInt(p, 10));
+        if (parts.length >= 4 && parts.every((n) => !isNaN(n))) {
+            const rect = {rowStart: parts[0], colStart: parts[1], rowEnd: parts[2], colEnd: parts[3]};
+            if (ccRectCache) ccRectCache.set(el, rect);
+            return rect;
+        }
+    }
+    const cs = getComputedStyle(el),
+        rowStart = parseInt(cs.gridRowStart) || 1,
+        colStart = parseInt(cs.gridColumnStart) || 1,
+        rowEndRaw = cs.gridRowEnd,
+        colEndRaw = cs.gridColumnEnd;
+    let rowEnd = !rowEndRaw || rowEndRaw === "auto" ? rowStart + 1 : parseInt(rowEndRaw);
+    let colEnd = !colEndRaw || colEndRaw === "auto" ? colStart + 1 : parseInt(colEndRaw);
+    if (rowEndRaw && rowEndRaw.includes("span"))
+        rowEnd = rowStart + (parseInt(rowEndRaw.replace(/[^\d]/g, ""), 10) || 1);
+    if (colEndRaw && colEndRaw.includes("span"))
+        colEnd = colStart + (parseInt(colEndRaw.replace(/[^\d]/g, ""), 10) || 1);
+    if (!rowEnd) rowEnd = rowStart + 1;
+    if (!colEnd) colEnd = colStart + 1;
+    const rect = {rowStart, colStart, rowEnd, colEnd};
+    if (ccRectCache) ccRectCache.set(el, rect);
+    return rect;
+}
+function ccGetHoverSlot(x, y, rowSpan, colSpan) {
+    const left = ccGridLeft,
+        top = ccGridTop,
+        width = ccGridWidth,
+        height = ccGridHeight;
+    if (x < left || x > left + width || y < top || y > top + height) return null;
+    const cols = ccGridCols || 1,
+        rows = ccGridRows || 1;
+    let col = Math.floor(((x - left) / width) * cols) + 1;
+    let row = Math.floor(((y - top) / height) * rows) + 1;
+    col = Math.min(cols, Math.max(1, col));
+    row = Math.min(rows, Math.max(1, row));
+    if (row + rowSpan - 1 > rows) row = rows - rowSpan + 1;
+    if (col + colSpan - 1 > cols) col = cols - colSpan + 1;
+    if (row < 1 || col < 1) return null;
+    return {row, col, rowSpan, colSpan};
+}
+function ccIsAreaFree(row, col, rowSpan, colSpan, ignoreEl, items) {
+    const targetRowEnd = row + rowSpan;
+    const targetColEnd = col + colSpan;
+    const list = items || getCCItems();
+    for (const child of list) {
+        if (child === ignoreEl) continue;
+        const rect = getCCGridRect(child);
+        if (
+            !(
+                targetRowEnd <= rect.rowStart ||
+                row >= rect.rowEnd ||
+                targetColEnd <= rect.colStart ||
+                col >= rect.colEnd
+            )
+        )
             return false;
-        }
-        if (controlCenter.classList.contains("open")) {
-            console.log("Control Center already open");
-            return true;
-        }
-        openControlsCenter();
-        console.log("Control Center opened successfully");
-        return true;
-    } catch (error) {
-        console.error("Error opening Control Center:", error);
-        return false;
     }
+    return true;
 }
-function toggleControlCenter() {
-    if (controlCenter.classList.contains("open")) {
-        closeControlsCenter(false);
-        console.log("Control Center closed");
-    } else {
-        openControlCenterDirectly();
+const isAeraFreeCC = (slot) =>
+    slot && ccIsAreaFree(slot.row, slot.col, ccDragRowSpan, ccDragColSpan, ccDragTarget, ccDragItems);
+function animateCCRelayout(elements, applyLayout) {
+    if (elements.length > 12) {
+        applyLayout();
+        return;
     }
+    const first = new Map();
+    for (const el of elements) first.set(el, el.getBoundingClientRect());
+    applyLayout();
+    requestAnimationFrame(() => {
+        for (const el of elements) {
+            const f = first.get(el);
+            if (!f) continue;
+            const last = el.getBoundingClientRect(),
+                dx = f.left - last.left,
+                dy = f.top - last.top;
+            if (dx || dy)
+                el.animate([{transform: `translate(${dx}px, ${dy}px)`}, {transform: "translate(0,0)"}], {
+                    duration: 220,
+                    easing: "cubic-bezier(.22,.61,.36,1)",
+                    composite: "add",
+                });
+        }
+    });
 }
-window.toggleControlCenter = toggleControlCenter;
-window.openControlCenter = openControlCenterDirectly;
-window.closeControlCenter = closeControlsCenter;
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM loaded, initializing Control Center...");
-    setTimeout(() => {
-        openControlCenterDirectly();
-    }, 100);
-});
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && controlCenter.classList.contains('open')) {
-        closeControlsCenter(false);
-        e.preventDefault();
-    }
-});
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'c' || e.key === 'C')) {
-        e.preventDefault();
-        toggleControlCenter();
-    }
-});
-const originalOpen = openControlsCenter;
-openControlsCenter = function() {
-    try {
-        if (controlCenter.classList.contains("open")) {
-            console.log("Already open");
-            return;
-        }
-        console.log("Opening Control Center...");
-        controlCenter.style.display = "flex";
-        controlCenter.style.opacity = "0";
-        requestAnimationFrame(() => {
-            controlCenter.classList.add("open");
-            controlCenter.style.opacity = "1";
-        });
-        originalOpen.call(this);
-        controlCenter.animate([
-            { opacity: 0, transform: 'scale(0.95)' },
-            { opacity: 1, transform: 'scale(1)' }
-        ], {
-            duration: 300,
-            easing: 'ease-out'
-        });
-    } catch (error) {
-        console.error("Error in openControlsCenter:", error);
-        controlCenter.style.display = "flex";
-        controlCenter.classList.add("open");
-        controlCenter.style.opacity = "1";
-    }
-};
-const originalClose = closeControlsCenter;
-closeControlsCenter = function(fromSystem = false) {
-    try {
-        if (!controlCenter.classList.contains("open")) {
-            console.log("Already closed");
-            return;
-        }
-        console.log("Closing Control Center...");
-        controlCenter.animate([
-            { opacity: 1, transform: 'scale(1)' },
-            { opacity: 0, transform: 'scale(0.95)' }
-        ], {
-            duration: 200,
-            easing: 'ease-in'
-        });
-        originalClose.call(this, fromSystem);
-        setTimeout(() => {
-            if (!controlCenter.classList.contains("open")) {
-                controlCenter.style.display = "none";
-                controlCenter.style.opacity = "0";
+function ccRestoreTempSwap() {
+    if (!ccTempSwapState) return;
+    const items = ccTempSwapState.items;
+    const elements = items.map((i) => i.el);
+    animateCCRelayout(elements, () => {
+        for (const item of items) {
+            item.el.style.gridArea = item.gridArea;
+            if (ccRectCache) {
+                const parts = item.gridArea.split("/").map((p) => parseInt(p, 10));
+                ccRectCache.set(item.el, {
+                    rowStart: parts[0],
+                    colStart: parts[1],
+                    rowEnd: parts[2],
+                    colEnd: parts[3],
+                });
             }
-        }, 250);
-    } catch (error) {
-        console.error("Error in closeControlsCenter:", error);
-        controlCenter.classList.remove("open");
-        controlCenter.style.display = "none";
-        controlCenter.style.opacity = "0";
+        }
+    });
+    ccTempSwapState = null;
+    if (ccPendingRestore) {
+        clearTimeout(ccPendingRestore);
+        ccPendingRestore = null;
     }
-};
-console.log("Control Center initialized!");
-console.log("Use toggleControlCenter() to open/close");
-console.log("Or press Ctrl+Shift+C");
+    ccPendingRestorePos = null;
+}
+function ccTryTempSwap(row, col) {
+    const rowSpan = ccDragRowSpan,
+        colSpan = ccDragColSpan,
+        items = [],
+        allIcons = ccDragItems || getCCItems();
+    let totalArea = 0;
+    for (const icon of allIcons) {
+        if (icon === ccDragTarget) continue;
+        const rect = getCCGridRect(icon);
+        const intersects = !(
+            rect.rowEnd <= row ||
+            rect.rowStart >= row + rowSpan ||
+            rect.colEnd <= col ||
+            rect.colStart >= col + colSpan
+        );
+        if (!intersects) continue;
+        const fullyInside =
+            rect.rowStart >= row &&
+            rect.rowEnd <= row + rowSpan &&
+            rect.colStart >= col &&
+            rect.colEnd <= col + colSpan;
+        if (!fullyInside) return;
+        items.push({
+            el: icon,
+            gridArea: `${rect.rowStart} / ${rect.colStart} / ${rect.rowEnd} / ${rect.colEnd}`,
+            relRow: rect.rowStart - row,
+            relCol: rect.colStart - col,
+            relRowEnd: rect.rowEnd - row,
+            relColEnd: rect.colEnd - col,
+        });
+        totalArea += (rect.rowEnd - rect.rowStart) * (rect.colEnd - rect.colStart);
+    }
+    if (!items.length || totalArea > rowSpan * colSpan) return;
+    ccRestoreTempSwap();
+    animateCCRelayout(
+        items.map((i) => i.el),
+        () => {
+            items.forEach((item) => {
+                const newRowStart = ccOriginRow + item.relRow,
+                    newColStart = ccOriginCol + item.relCol,
+                    newRowEnd = ccOriginRow + item.relRowEnd,
+                    newColEnd = ccOriginCol + item.relColEnd;
+                item.el.style.gridArea = `${newRowStart} / ${newColStart} / ${newRowEnd} / ${newColEnd}`;
+                if (ccRectCache)
+                    ccRectCache.set(item.el, {
+                        rowStart: newRowStart,
+                        colStart: newColStart,
+                        rowEnd: newRowEnd,
+                        colEnd: newColEnd,
+                    });
+            });
+        }
+    );
+    ccTempSwapState = {row, col, rowSpan, colSpan, items};
+}
+function ccPointerDown(e) {
+    if (e.currentTarget.classList.contains("iitem") || ccIsDragging) return;
+    const el = e.currentTarget,
+        startX = e.clientX,
+        startY = e.clientY,
+        clearHold = () => {
+            if (ccHoldTimer) {
+                clearTimeout(ccHoldTimer);
+                ccHoldTimer = null;
+            }
+            window.removeEventListener("pointercancel", clearHold);
+            window.removeEventListener("pointerup", clearHold);
+            window.removeEventListener("pointermove", onMoveHold);
+        },
+        onMoveHold = (ev) => {
+            const dx = ev.clientX - startX,
+                dy = ev.clientY - startY;
+            if (dx * dx + dy * dy > 25) clearHold();
+        };
+    ccHoldTimer = setTimeout(() => {
+        clearHold();
+        ccStartDrag(el, e);
+    }, 400);
+    window.addEventListener("pointercancel", clearHold);
+    window.addEventListener("pointerup", clearHold);
+    window.addEventListener("pointermove", onMoveHold);
+}
+function ccStartDrag(el, e) {
+    ccDragTarget = el;
+    ccIsDragging = true;
+    ccDidDrag = true;
+    ccStartX = e.clientX;
+    ccStartY = e.clientY;
+    ccLastDx = 0;
+    ccLastDy = 0;
+    if (e.pointerId !== undefined) ccDragTarget.setPointerCapture(e.pointerId);
+    e.preventDefault();
+    e.stopPropagation();
+    if (el.classList.contains("slider")) {
+        if (el === sliderVolume_volume) volMouseUp();
+        if (el === sliderBrightness_brightness) briMouseUp();
+        isDragging_volume = false;
+        isDragging_brightness = false;
+    }
+    const gridRect = gridCC.getBoundingClientRect(),
+        cs = getComputedStyle(el),
+        gridCS = getComputedStyle(gridCC);
+    let scaleX = 1,
+        scaleY = 1;
+    const ow = gridCC.offsetWidth || 0,
+        oh = gridCC.offsetHeight || 0;
+    if (ow > 0) scaleX = gridRect.width / ow;
+    if (oh > 0) scaleY = gridRect.height / oh;
+    if (!isFinite(scaleX) || scaleX <= 0) scaleX = 1;
+    if (!isFinite(scaleY) || scaleY <= 0) scaleY = 1;
+    ccOriginRow = parseInt(cs.gridRowStart);
+    ccOriginCol = parseInt(cs.gridColumnStart);
+    ccOriginRowEnd = cs.gridRowEnd === "auto" ? ccOriginRow + 1 : parseInt(cs.gridRowEnd);
+    ccOriginColEnd = cs.gridColumnEnd === "auto" ? ccOriginCol + 1 : parseInt(cs.gridColumnEnd);
+    const previewLeft = el.offsetLeft,
+        previewTop = el.offsetTop,
+        previewWidth = el.offsetWidth,
+        previewHeight = el.offsetHeight;
+    ccPreviewBaseLeft = previewLeft;
+    ccPreviewBaseTop = previewTop;
+    ccGridLeft = gridRect.left;
+    ccGridTop = gridRect.top;
+    ccGridWidth = gridRect.width || 1;
+    ccGridHeight = gridRect.height || 1;
+    ccScaleX = scaleX;
+    ccScaleY = scaleY;
+    const colTokens = gridCS.gridTemplateColumns.split(" ").filter(Boolean),
+        rowTokens = gridCS.gridTemplateRows.split(" ").filter(Boolean);
+    ccGridCols = colTokens.length || 1;
+    ccGridRows = rowTokens.length || 1;
+    const colSize = parseFloat(colTokens[0] || "0") || 0,
+        rowSize = parseFloat(rowTokens[0] || "0") || 0,
+        colGap = parseFloat(gridCS.columnGap || gridCS.gap || "0") || 0,
+        rowGap = parseFloat(gridCS.rowGap || gridCS.gap || "0") || 0,
+        rowSpan = Math.max(1, ccOriginRowEnd - ccOriginRow),
+        colSpan = Math.max(1, ccOriginColEnd - ccOriginCol);
+    const cellW = (ccGridWidth - (ccGridCols - 1) * colGap) / ccGridCols,
+        cellH = (ccGridHeight - (ccGridRows - 1) * rowGap) / ccGridRows;
+    ccDragRowSpan = rowSpan;
+    ccDragColSpan = colSpan;
+    ccLastSlotRow = -1;
+    ccLastSlotCol = -1;
+    ccSlotBaseLeft = (ccOriginCol - 1) * (colSize + colGap);
+    ccSlotBaseTop = (ccOriginRow - 1) * (rowSize + rowGap);
+    ccSlotBaseWidth = colSpan * colSize + Math.max(0, colSpan - 1) * colGap;
+    ccSlotBaseHeight = rowSpan * rowSize + Math.max(0, rowSpan - 1) * rowGap;
+    ccDragItems = getCCItems();
+    ccRectCache = new Map();
+    for (const item of ccDragItems) {
+        ccRectCache.set(item, getCCGridRect(item));
+    }
+    ccPreview = el.cloneNode(true);
+    ccPreview.classList.add("cc-preview", "noActiveAnim");
+    ccPreview.style.position = "absolute";
+    ccPreview.style.left = `${previewLeft}px`;
+    ccPreview.style.top = `${previewTop}px`;
+    ccPreview.style.width = `${previewWidth}px`;
+    ccPreview.style.height = `${previewHeight}px`;
+    ccPreview.style.margin = "0";
+    ccPreview.style.gridArea = "auto";
+    ccPreview.style.boxSizing = "border-box";
+    ccPreview.style.pointerEvents = "none";
+    ccPreview.style.opacity = "1";
+    ccPreview.style.zIndex = "999";
+    ccPreview.style.transformOrigin = "0 0";
+    ccPreview.style.transition = "transform 80ms linear";
+    ccPreview.style.transform = `scale(1)`;
+    ccPreviewDropPos = document.createElement("div");
+    ccPreviewDropPos.className = "dropPos";
+    ccPreview.appendChild(ccPreviewDropPos);
+
+    gridCC.appendChild(ccPreview);
+    ccDropOffsetX = ccPreviewDropPos.offsetLeft;
+    ccDropOffsetY = ccPreviewDropPos.offsetTop;
+    if (ccCheckTimer) clearInterval(ccCheckTimer);
+    ccCheckTimer = setInterval(ccCheckSlotTick, 120);
+    ccPreview.animate([{scale: 1}, {scale: ccLiftScale}], {duration: 300, easing: "ease"});
+    ccPreview.style.scale = ccLiftScale;
+    el.style.transition = "none";
+    el.style.setProperty("opacity", "0", "important");
+    el.style.visibility = "hidden";
+    document.addEventListener("pointermove", ccPointerMove, {passive: false});
+    document.addEventListener("pointerup", ccPointerUp, {passive: false});
+    document.addEventListener("pointercancel", ccPointerUp, {passive: false});
+}
+function ccCheckSlotTick() {
+    if (!ccIsDragging) return;
+    const r = ccPreviewDropPos.getBoundingClientRect(),
+        slotX = r.left + r.width / 2,
+        slotY = r.top + r.height / 2,
+        slot = ccGetHoverSlot(slotX, slotY, ccDragRowSpan, ccDragColSpan);
+
+    let row = -1;
+    let col = -1;
+    if (slot) {
+        row = slot.row;
+        col = slot.col;
+    }
+
+    if (row === ccLastSlotRow && col === ccLastSlotCol) return;
+    ccLastSlotRow = row;
+    ccLastSlotCol = col;
+    if (ccTempSwapState) {
+        const sameSlot = row === ccTempSwapState.row && col === ccTempSwapState.col;
+        if (sameSlot && ccPendingRestore) {
+            clearTimeout(ccPendingRestore);
+            ccPendingRestore = null;
+            ccPendingRestorePos = null;
+        } else if (!sameSlot) {
+            if (!ccPendingRestore) {
+                ccPendingRestorePos = {x: slotX, y: slotY};
+                ccPendingRestore = setTimeout(() => {
+                    ccRestoreTempSwap();
+                }, 120);
+            } else if (ccPendingRestorePos) {
+                const dxr = slotX - ccPendingRestorePos.x,
+                    dyr = slotY - ccPendingRestorePos.y;
+                if (dxr * dxr + dyr * dyr > 100) {
+                    clearTimeout(ccPendingRestore);
+                    ccPendingRestore = null;
+                    ccPendingRestorePos = {x: slotX, y: slotY};
+                    ccPendingRestore = setTimeout(() => {
+                        ccRestoreTempSwap();
+                    }, 120);
+                }
+            }
+        }
+    }
+    if (slot && !ccTempSwapState && !ccPendingRestore) ccTryTempSwap(row, col);
+}
+function ccPointerMove(e) {
+    if (!ccIsDragging) return;
+    e.preventDefault();
+    const dx = (e.clientX - ccStartX) / (ccScaleX || 1),
+        dy = (e.clientY - ccStartY) / (ccScaleY || 1);
+    ccPreview.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+    ccLastDx = dx;
+    ccLastDy = dy;
+}
+function ccPointerUp(e) {
+    if (!ccIsDragging) return;
+    ccIsDragging = false;
+    if (ccDidDrag) ccSuppressClickUntil = Date.now() + 250;
+    ccDidDrag = false;
+    document.removeEventListener("pointermove", ccPointerMove);
+    document.removeEventListener("pointerup", ccPointerUp);
+    document.removeEventListener("pointercancel", ccPointerUp);
+    if (ccCheckTimer) {
+        clearInterval(ccCheckTimer);
+        ccCheckTimer = null;
+    }
+    if (ccMoveRaf) {
+        cancelAnimationFrame(ccMoveRaf);
+        ccMoveRaf = 0;
+    }
+    const r = ccPreviewDropPos.getBoundingClientRect(),
+        slotX = r.left + r.width / 2,
+        slotY = r.top + r.height / 2,
+        slot = ccGetHoverSlot(slotX, slotY, ccDragRowSpan, ccDragColSpan);
+    if (isAeraFreeCC(slot))
+        ccDragTarget.style.gridArea = `${slot.row} / ${slot.col} / ${slot.row + ccDragRowSpan} / ${
+            slot.col + ccDragColSpan
+        }`;
+    else {
+        ccRestoreTempSwap();
+        ccDragTarget.style.gridArea = `${ccOriginRow} / ${ccOriginCol} / ${ccOriginRowEnd} / ${ccOriginColEnd}`;
+    }
+    const previewEl = ccPreview,
+        targetEl = ccDragTarget,
+        cleanupPreview = () => {
+            targetEl.style.transition = "";
+            targetEl.style.opacity = "";
+            targetEl.style.removeProperty("opacity");
+            targetEl.style.visibility = "";
+            previewEl._ccCleaned = true;
+            previewEl.remove();
+        };
+    requestAnimationFrame(() => {
+        const toX = (targetEl.offsetLeft || 0) - ccPreviewBaseLeft,
+            toY = (targetEl.offsetTop || 0) - ccPreviewBaseTop,
+            fromX = ccLastDx,
+            fromY = ccLastDy,
+            anim = previewEl.animate(
+                [
+                    {transform: `translate(${fromX}px, ${fromY}px)`, scale: ccLiftScale},
+                    {transform: `translate(${toX}px, ${toY}px)`, scale: 1},
+                ],
+                {duration: 280, easing: "ease"}
+            );
+        anim.onfinish = cleanupPreview;
+        anim.oncancel = cleanupPreview;
+        setTimeout(cleanupPreview, 360);
+    });
+    saveCCLayout();
+    ccPreview = null;
+    ccDragTarget = null;
+    ccPreviewDropPos = null;
+    ccTempSwapState = null;
+    ccPendingRestore = null;
+    ccPendingRestorePos = null;
+    ccDragItems = null;
+    ccRectCache = null;
+}
