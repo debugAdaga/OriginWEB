@@ -350,7 +350,9 @@
     position: absolute;
     overflow: hidden;
     border-radius: inherit;
-    align-content: end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     height: 100%;
     width: 100%;
     top: 0;
@@ -360,6 +362,7 @@
 .sys.controlCenter.OriginOS .grid-cc .item.slider .cn .sliderIN {
     width: 100%;
     background-color: white;
+    flex-shrink: 0;
 }
 
 .sys.controlCenter.OriginOS .grid-cc .item.slider svg {
@@ -780,12 +783,15 @@
     width: 100%;
     overflow: hidden;
     border-radius: inherit;
-    align-content: end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .sys.controlCenter.HarmonyOS .grid-cc .item.slider .cn .sliderIN {
     width: 100%;
     background-color: rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
 }
 
 .sys.controlCenter.HarmonyOS .grid-cc .item.slider svg {
