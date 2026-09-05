@@ -8,7 +8,6 @@
     z-index: 9999;
     cursor: grab;
 }
-
 .phone.computerMode {
     #statusBar {
         bottom: var(--nav-padding);
@@ -55,7 +54,6 @@
         }
     }
 }
-
 #statusBar .right,
 #statusBar .left {
     display: flex;
@@ -68,257 +66,75 @@
     z-index: 2;
     position: absolute;
 }
-
 #statusBar .right {
     right: 0;
 }
-
 #statusBar .left {
     justify-content: flex-start;
 }
-
 #statusBar .right .itemStatus,
 #statusBar .left .itemStatus {
     display: flex;
     position: absolute;
     justify-content: flex-end;
     align-items: center;
-    gap: 9px;
+    gap: 7px;
     pointer-events: all;
     transition: all calc(0.6s * var(--bg-speedAnimation));
     height: var(--statusBar-height);
 }
-
 .itemStatus > * {
     flex: 0 0 auto;
 }
-
-/* ===== ИКОНКИ СТАТУС-БАРА ===== */
 #statusBar svg {
-    height: 18px;
-    width: 18px;
+    height: 12px;
+    width: 12px;
     fill: white;
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
-    transition: transform 0.2s ease;
 }
 
-#statusBar svg:hover {
-    transform: scale(1.15);
-}
-
-/* Специально для иконки SIM-карты делаем толще */
-#status_sim {
-    height: 16px !important;
-    width: 22px !important;
-}
-
-#status_sim path {
-    stroke: white;
-    stroke-width: 1.5px;
-}
-
-/* Для иконки Wi-Fi/сигнала делаем жирнее */
-#statusBar .right svg:not(#status_sim):not(.status-battery *) {
-    height: 19px;
-    width: 19px;
-    stroke: white;
-    stroke-width: 1.2px;
-}
-
-/* Иконка Wi-Fi с жирными линиями */
-#statusBar .right svg path {
-    stroke: white;
-    stroke-width: 1.8px;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-/* ===== ЧАСЫ ===== */
 #statusClock {
     display: flex;
     margin-left: calc(0.07px * var(--bg-widthPhone));
-    font-family: "Fredoka", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-    color: #ffffff;
+    font-family: "Fredoka";
+    font-size: 12px;
 }
-
 #networkName {
     display: none;
     margin-left: 20px;
-    font-family: "Fredoka", "SF Pro Display", sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-    color: #ffffff;
-    opacity: 0.9;
+    font-family: "Fredoka";
+    font-size: 12px;
 }
-
 #networkName2 {
     display: none;
-    font-family: "Fredoka", "SF Pro Display", sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-    color: #ffffff;
-    opacity: 0.9;
+    font-family: "Fredoka";
+    font-size: 12px;
 }
 
-/* ===== КРАСИВАЯ ТОЛСТАЯ БАТАРЕЯ ===== */
 .status-battery {
     position: relative;
     display: flex;
     margin-right: calc(0.09px * var(--bg-widthPhone));
-    width: 28px;
-    height: 14px;
-    border-radius: 4px;
+    width: 24px;
+    height: 12px;
+    background: white;
+    border-radius: 999px;
     align-items: center;
     justify-content: center;
+    color: black;
     transition: all 0.5s ease;
-    border: 2px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    background: rgba(255, 255, 255, 0.08);
 }
-
-/* Маленький выступ у батареи */
-.batterySmall {
-    position: absolute;
-    right: 0;
-    translate: calc(100% - 0px) 0;
-    width: 3px;
-    height: 6px;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.containerBattery {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border-radius: 2px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* Заливка батареи - БЕЛАЯ */
-.batteryLevel {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: #ffffff;
-    border-radius: 2px;
-    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transform-origin: left;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-}
-
-/* Процент внутри батареи - ЧЁРНЫЙ ЖИРНЫЙ */
 .batteryNum {
     display: flex;
     position: absolute;
-    font-family: "gf_Roboto_Flex variant0", Helvetica, "SF Pro Display", sans-serif;
+    font-family: "gf_Roboto_Flex variant0", Helvetica;
     font-size: 9px;
-    color: #000000;
+    color: black;
     justify-content: center;
     align-items: center;
-    font-weight: 900;
+    font-weight: 800;
     font-stretch: 25%;
     font-optical-sizing: auto;
     font-variation-settings: "XTRA" 323;
     font-style: normal;
     inset: 0;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-    letter-spacing: 0px;
-    z-index: 2;
-    pointer-events: none;
-}
-
-/* При низком заряде */
-.status-battery[data-level="low"] .batteryLevel {
-    width: 35% !important;
-    background: #ffffff;
-}
-
-.status-battery[data-level="critical"] .batteryLevel {
-    width: 15% !important;
-    background: #ffffff;
-    animation: batteryPulse 1.2s ease-in-out infinite;
-}
-
-@keyframes batteryPulse {
-    0%, 100% { 
-        opacity: 1;
-    }
-    50% { 
-        opacity: 0.4;
-    }
-}
-
-/* Цвет ободка при критическом заряде - красный */
-.status-battery[data-level="critical"] {
-    border-color: rgba(255, 80, 80, 0.9);
-    animation: borderPulse 1.2s ease-in-out infinite;
-}
-
-@keyframes borderPulse {
-    0%, 100% { border-color: rgba(255, 80, 80, 0.9); }
-    50% { border-color: rgba(255, 80, 80, 0.4); }
-}
-
-/* ===== АНИМАЦИЯ ПОЯВЛЕНИЯ ===== */
-@keyframes statusBarSlideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-#statusBar {
-    animation: statusBarSlideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-/* ===== АДАПТИВ ===== */
-@media (max-width: 480px) {
-    #statusBar .right .itemStatus,
-    #statusBar .left .itemStatus {
-        gap: 5px;
-    }
-    
-    #statusBar svg {
-        height: 15px;
-        width: 15px;
-    }
-    
-    #status_sim {
-        height: 13px !important;
-        width: 18px !important;
-    }
-    
-    #statusClock {
-        font-size: 13px;
-    }
-    
-    .status-battery {
-        width: 22px;
-        height: 11px;
-    }
-    
-    .batterySmall {
-        height: 4px;
-        width: 2px;
-    }
-    
-    .batteryNum {
-        font-size: 7px;
-    }
 }
