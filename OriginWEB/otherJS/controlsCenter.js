@@ -746,4 +746,233 @@ function applyScaleBrightness_brightness(rawValue, dtSec, recoverOnInside) {
 }
 function volMouseDown(e) {
     if (ccIsDragging) return;
-    if
+    if (!sliderVolume_volume) {
+        refreshCCSliderRefs();
+        if (!sliderVolume_volume) return;
+    }
+    const rect = sliderInVolume_volume.getBoundingClientRect();
+    sliderHeight_volume = rect.height;
+    startY_volume = e.clientY;
+    startValue_volume = value_volume;
+    isDragging_volume = true;
+    lastY_volume = e.clientY;
+    lastT_volume = performance.now();
+    velocity_volume = 0;
+    rawValue_volume = value_volume;
+    if (inertiaActive_volume) {
+        cancelAnimationFrame(inertiaRaf_volume);
+        inertiaActive_volume = false;
+    }
+    sliderVolume_volume.style.transition = "none";
+    sliderInVolume_volume.style.transition = "none";
+    if (e.pointerId !== undefined) sliderVolume_volume.setPointerCapture(e.pointerId);
+    document.addEventListener("pointermove", volMouseMove);
+    document.addEventListener("pointerup", volMouseUp);
+    document.addEventListener("pointercancel", volMouseUp);
+}
+function volMouseMove(e) {
+    if (!isDragging_volume) return;
+    const now = performance.now();
+    const dt = Math.min(now - lastT_volume, 100) / 1000;
+    lastT_volume = now;
+    const dy = -(e.clientY - lastY_volume);
+    lastY_volume = e.clientY;
+    const sensitivity = 0.8;
+    const deltaValue = (dy / sliderHeight_volume) * 100 * sensitivity;
+    rawValue_volume = Math.max(-10, Math.min(110, rawValue_volume + deltaValue));
+    const clampedValue = Math.max(0, Math.min(100, rawValue_volume));
+    value_volume = clampedValue;
+    syncVolumeValueToUI_volume(clampedValue);
+    applyScaleVolume_volume(rawValue_volume, dt, false);
+    if (typeof window.vmSetVolume === "function") window.vmSetVolume(value_volume);
+}
+function volMouseUp(e) {
+    if (!isDragging_volume) return;
+    isDragging_volume = false;
+    document.removeEventListener("pointermove", volMouseMove);
+    document.removeEventListener("pointerup", volMouseUp);
+    document.removeEventListener("pointercancel", volMouseUp);
+    const finalValue = Math.max(0, Math.min(100, rawValue_volume));
+    value_volume = finalValue;
+    syncVolumeValueToUI_volume(finalValue);
+    applyScaleVolume_volume(rawValue_volume, 0, true);
+    if (typeof window.vmSetVolume === "function") window.vmSetVolume(value_volume);
+}
+function brightMouseDown(e) {
+    if (ccIsDragging) return;
+    if (!sliderBrightness_brightness) {
+        refreshCCSliderRefs();
+        if (!sliderBrightness_brightness) return;
+    }
+    const rect = sliderInBrightness_brightness.getBoundingClientRect();
+    sliderHeight_brightness = rect.height;
+    startY_brightness = e.clientY;
+    startValue_brightness = value_brightness;
+    isDragging_brightness = true;
+    lastY_brightness = e.clientY;
+    lastT_brightness = performance.now();
+    velocity_brightness = 0;
+    rawValue_brightness = value_brightness;
+    if (inertiaActive_brightness) {
+        cancelAnimationFrame(inertiaRaf_brightness);
+        inertiaActive_brightness = false;
+    }
+    sliderBrightness_brightness.style.transition = "none";
+    sliderInBrightness_brightness.style.transition = "none";
+    if (e.pointerId !== undefined) sliderBrightness_brightness.setPointerCapture(e.pointerId);
+    document.addEventListener("pointermove", brightMouseMove);
+    document.addEventListener("pointerup", brightMouseUp);
+    document.addEventListener("pointercancel", brightMouseUp);
+}
+function brightMouseMove(e) {
+    if (!isDragging_brightness) return;
+    const now = performance.now();
+    const dt = Math.min(now - lastT_brightness, 100) / 1000;
+    lastT_brightness = now;
+    const dy = -(e.clientY - lastY_brightness);
+    lastY_brightness = e.clientY;
+    const sensitivity = 0.8;
+    const deltaValue = (dy / sliderHeight_brightness) * 100 * sensitivity;
+    rawValue_brightness = Math.max(10, Math.min(110, rawValue_brightness + deltaValue));
+    const clampedValue = Math.max(20, Math.min(100, rawValue_brightness));
+    value_brightness = clampedValue;
+    if (sliderInBrightness_brightness) sliderInBrightness_brightness.style.height = `${clampedValue}%`;
+    applyScaleBrightness_brightness(rawValue_brightness, dt, false);
+    if (typeof window.vmSetBrightness === "function") window.vmSetBrightness(value_brightness);
+}
+function brightMouseUp(e) {
+    if (!isDragging_brightness) return;
+    isDragging_brightness = false;
+    document.removeEventListener("pointermove", brightMouseMove);
+    document.removeEventListener("pointerup", brightMouseUp);
+    document.removeEventListener("pointercancel", brightMouseUp);
+    const finalValue = Math.max(20, Math.min(100, rawValue_brightness));
+    value_brightness = finalValue;
+    if (sliderInBrightness_brightness) sliderInBrightness_brightness.style.height = `${finalValue}%`;
+    applyScaleBrightness_brightness(rawValue_brightness, 0, true);
+    if (typeof window.vmSetBrightness === "function") window.vmSetBrightness(value_brightness);
+}
+function addDragVolumeAndBrightnessEvents() {
+    if (sliderVolume_volume) {
+        sliderVolume_volume.addEventListener("pointerdown", volMouseDown);
+    }
+    if (sliderBrightness_brightness) {
+        sliderBrightness_brightness.addEventListener("pointerdown", brightMouseDown);
+    }
+}
+function removeDragVolumeAndBrightnessEvents() {
+    if (sliderVolume_volume) {
+        sliderVolume_volume.removeEventListener("pointerdown", volMouseDown);
+    }
+    if (sliderBrightness_brightness) {
+        sliderBrightness_brightness.removeEventListener("pointerdown", brightMouseDown);
+    }
+}
+function openControlCenterDirectly() {
+    try {
+        if (!controlCenter) {
+            console.error("Control Center element not found");
+            return false;
+        }
+        if (controlCenter.classList.contains("open")) {
+            console.log("Control Center already open");
+            return true;
+        }
+        openControlsCenter();
+        console.log("Control Center opened successfully");
+        return true;
+    } catch (error) {
+        console.error("Error opening Control Center:", error);
+        return false;
+    }
+}
+function toggleControlCenter() {
+    if (controlCenter.classList.contains("open")) {
+        closeControlsCenter(false);
+        console.log("Control Center closed");
+    } else {
+        openControlCenterDirectly();
+    }
+}
+window.toggleControlCenter = toggleControlCenter;
+window.openControlCenter = openControlCenterDirectly;
+window.closeControlCenter = closeControlsCenter;
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM loaded, initializing Control Center...");
+    setTimeout(() => {
+        openControlCenterDirectly();
+    }, 100);
+});
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && controlCenter.classList.contains('open')) {
+        closeControlsCenter(false);
+        e.preventDefault();
+    }
+});
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'c' || e.key === 'C')) {
+        e.preventDefault();
+        toggleControlCenter();
+    }
+});
+const originalOpen = openControlsCenter;
+openControlsCenter = function() {
+    try {
+        if (controlCenter.classList.contains("open")) {
+            console.log("Already open");
+            return;
+        }
+        console.log("Opening Control Center...");
+        controlCenter.style.display = "flex";
+        controlCenter.style.opacity = "0";
+        requestAnimationFrame(() => {
+            controlCenter.classList.add("open");
+            controlCenter.style.opacity = "1";
+        });
+        originalOpen.call(this);
+        controlCenter.animate([
+            { opacity: 0, transform: 'scale(0.95)' },
+            { opacity: 1, transform: 'scale(1)' }
+        ], {
+            duration: 300,
+            easing: 'ease-out'
+        });
+    } catch (error) {
+        console.error("Error in openControlsCenter:", error);
+        controlCenter.style.display = "flex";
+        controlCenter.classList.add("open");
+        controlCenter.style.opacity = "1";
+    }
+};
+const originalClose = closeControlsCenter;
+closeControlsCenter = function(fromSystem = false) {
+    try {
+        if (!controlCenter.classList.contains("open")) {
+            console.log("Already closed");
+            return;
+        }
+        console.log("Closing Control Center...");
+        controlCenter.animate([
+            { opacity: 1, transform: 'scale(1)' },
+            { opacity: 0, transform: 'scale(0.95)' }
+        ], {
+            duration: 200,
+            easing: 'ease-in'
+        });
+        originalClose.call(this, fromSystem);
+        setTimeout(() => {
+            if (!controlCenter.classList.contains("open")) {
+                controlCenter.style.display = "none";
+                controlCenter.style.opacity = "0";
+            }
+        }, 250);
+    } catch (error) {
+        console.error("Error in closeControlsCenter:", error);
+        controlCenter.classList.remove("open");
+        controlCenter.style.display = "none";
+        controlCenter.style.opacity = "0";
+    }
+};
+console.log("Control Center initialized!");
+console.log("Use toggleControlCenter() to open/close");
+console.log("Or press Ctrl+Shift+C");
