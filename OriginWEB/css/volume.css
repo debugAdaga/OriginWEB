@@ -75,10 +75,13 @@
 
         background-color: #41414179;
 
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
 
-        align-content: end;
-        justify-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
 
         transition: all calc(0.6s * var(--bg-speedAnimation)) cubic-bezier(0.39, 1.4, 0.4, 1),
             transform calc(0.3s * var(--bg-speedAnimation));
@@ -88,7 +91,9 @@
             inset: 0;
             border-radius: inherit;
             overflow: hidden;
-            align-content: end;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
             .sliderIN {
                 background-color: #fff;
                 transition: height 0.1s;
