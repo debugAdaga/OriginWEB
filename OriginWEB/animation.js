@@ -10,15 +10,15 @@ const APP_DISPLAY_SELECTOR = ".appDisplay";
 const OPEN_CLASS = "open";
 const HIDDEN_CLASS = "hidden";
 
-const OPEN_POINTER_DELAY = 200;
-const CLOSE_DELAY_DEFAULT = 700;
-const CLOSE_DELAY_SCRIPT = 800;
-const CLOSE_TO_CENTER_DURATION = 400;
-const OPEN_SWITCH_DURATION = 400;
-const OPEN_ISLAND_DURATION = 650;
-const OPEN_ISLAND_TIMEOUT = 650;
-const OPEN_CAMERA_DURATION = 650;
-const OPEN_CAMERA_TIMEOUT = 650;
+const OPEN_POINTER_DELAY = 250;
+const CLOSE_DELAY_DEFAULT = 850;
+const CLOSE_DELAY_SCRIPT = 950;
+const CLOSE_TO_CENTER_DURATION = 500;
+const OPEN_SWITCH_DURATION = 500;
+const OPEN_ISLAND_DURATION = 750;
+const OPEN_ISLAND_TIMEOUT = 750;
+const OPEN_CAMERA_DURATION = 750;
+const OPEN_CAMERA_TIMEOUT = 750;
 
 const MAX_PULL_Y = 140;
 const SCALE_DIVISOR = 280;
@@ -179,11 +179,11 @@ function doCloseApp({delayMs, shouldCloseToCenter, afterClose}) {
 }
 
 function closeAppToCenter() {
-    closeAppToCenterCore({easing: null});
+    closeAppToCenterCore({easing: "ease-in-out"});
 }
 
 function closeAppToCenterWithScript(script) {
-    closeAppToCenterCore({easing: "ease-out", afterFinish: script});
+    closeAppToCenterCore({easing: "ease-in-out", afterFinish: script});
 }
 
 function closeAppToCenterCore({easing, afterFinish}) {
@@ -210,13 +210,13 @@ function closeAppToCenterCore({easing, afterFinish}) {
 
     const anim = appEl.animate(
         [
-            {transform: getComputedStyle(appEl).transform},
-            {opacity: 1},
-            {transform: "translateY(-150px) scale(0.01)", opacity: 0},
+            {transform: getComputedStyle(appEl).transform, opacity: 1},
+            {transform: "translateY(-80px) scale(0.5)", opacity: 0.5},
+            {transform: "translateY(-180px) scale(0.01)", opacity: 0},
         ],
         {
             duration: CLOSE_TO_CENTER_DURATION * speed,
-            easing: easing || undefined,
+            easing: easing || "ease-in-out",
             composite: "replace",
         }
     );
@@ -224,7 +224,6 @@ function closeAppToCenterCore({easing, afterFinish}) {
     appEl.anim = anim;
     anim.onfinish = () => {
         appDisplay.style.display = ``;
-
         appEl.classList.remove(OPEN_CLASS);
         setScrollPointerEvents(true);
         runCloseScript(appEl.id);
@@ -260,13 +259,13 @@ function closeAppToLeft() {
 
     const anim = appEl.animate(
         [
-            {transform: getComputedStyle(appEl).transform},
-            {opacity: 1},
-            {transform: "translateX(-100%) scale(0.8)", opacity: 1},
+            {transform: getComputedStyle(appEl).transform, opacity: 1},
+            {transform: "translateX(-60%) scale(0.9)", opacity: 0.8},
+            {transform: "translateX(-120%) scale(0.7)", opacity: 0},
         ],
         {
             duration: OPEN_SWITCH_DURATION * speed,
-            easing: "ease-out",
+            easing: "ease-in-out",
         }
     );
 
@@ -292,14 +291,14 @@ function isVisuallyInsidePhone(el) {
 function updateTransform(y, x, d = "0.1") {
     const clampedY = Math.max(0, Math.min(MAX_PULL_Y, y));
 
-    currentOpeningElApp.style.transition = `all ${d}s`;
+    currentOpeningElApp.style.transition = `all ${d}s cubic-bezier(0.2, 0.9, 0.3, 1)`;
     currentOpeningElApp.style.transform = `translateX(${x}px) translateY(${-clampedY}px) scale(${
         1 - clampedY / SCALE_DIVISOR
     })`;
 }
 
 function resetpop() {
-    currentOpeningElApp.style.transition = `all 0.4s`;
+    currentOpeningElApp.style.transition = `all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1)`;
     currentOpeningElApp.style.transform = ``;
 }
 
@@ -341,7 +340,7 @@ function onTouchMoveNav(e) {
 
     deltaY = startY - e.touches[0].clientY;
     deltaX = e.touches[0].clientX - startX;
-    scheduleTransformUpdate(deltaY, deltaX, "0.1");
+    scheduleTransformUpdate(deltaY, deltaX, "0.15");
 }
 function onTouchEndNav() {
     if (!currentOpeningElApp) return;
@@ -380,9 +379,7 @@ function onMouseMoveNav(e) {
     deltaY = startY - e.clientY;
     deltaX = e.clientX - startX;
 
-    scheduleTransformUpdate(deltaY, deltaX, "0");
-
-    // navOvlay.style.transform = `translateX(${deltaX}px) translateY(${-deltaY}px)`;
+    scheduleTransformUpdate(deltaY, deltaX, "0.05");
 }
 function onMouseUpNav() {
     if (!dragging || !currentOpeningElApp) return;
@@ -390,7 +387,6 @@ function onMouseUpNav() {
     currentOpeningElApp.style.pointerEvents = "all";
     dragging = false;
 
-    // navOvlay.style.transform = "";
     if (rafId) {
         cancelAnimationFrame(rafId);
         rafId = 0;
@@ -433,7 +429,6 @@ function navStyle(style) {
     }
 }
 
-// Store running animations by app id
 const appAnimations = {};
 
 function setupOpenById(idApp, transitionValue) {
@@ -478,25 +473,33 @@ function openAppByID(idApp) {
     if (switchingApp) {
         const anim = appEl.animate(
             [
-                {transform: "translateX(330px) scale(0.8)"},
-                {transform: "translateX(200px) scale(0.8)"},
-                {transform: "translateX(100px) scale(0.85)"},
-                {transform: "scale(1)"},
+                {transform: "translateX(220px) scale(0.85)", opacity: 0.6},
+                {transform: "translateX(120px) scale(0.9)", opacity: 0.85},
+                {transform: "translateX(40px) scale(0.95)", opacity: 0.95},
+                {transform: "scale(1)", opacity: 1},
             ],
             {
                 duration: OPEN_SWITCH_DURATION * speed,
-                easing: "ease-out",
+                easing: "cubic-bezier(0.2, 0.9, 0.3, 1)",
             }
         );
         setStoredAnimation(appEl, anim, () => {
             runOpenScript(appEl.id);
         });
     } else if (hadNoOpenApp) {
-        const anim = appEl.animate([{transform: "scale(0.6)", opacity: 0}, {opacity: 1}, {transform: "scale(1)"}], {
-            duration: OPEN_SWITCH_DURATION * speed,
-            easing: "ease",
-            composite: "replace",
-        });
+        const anim = appEl.animate(
+            [
+                {transform: "scale(0.7)", opacity: 0},
+                {transform: "scale(0.9)", opacity: 0.6},
+                {transform: "scale(1.02)", opacity: 0.9},
+                {transform: "scale(1)", opacity: 1},
+            ],
+            {
+                duration: OPEN_SWITCH_DURATION * speed,
+                easing: "cubic-bezier(0.2, 0.9, 0.3, 1)",
+                composite: "replace",
+            }
+        );
         setStoredAnimation(appEl, anim, () => {
             runOpenScript(appEl.id);
         });
@@ -526,14 +529,14 @@ function openAppByIDFromIslandWithScript(idApp, script) {
     if (switchingApp) {
         const anim = appEl.animate(
             [
-                {transform: "translateX(120%) scale(0.8)"},
-                {transform: "translateX(80%) scale(0.8)"},
-                {transform: "translateX(40%) scale(0.85)"},
-                {transform: "scale(1)"},
+                {transform: "translateX(120%) scale(0.85)", opacity: 0.5},
+                {transform: "translateX(70%) scale(0.9)", opacity: 0.7},
+                {transform: "translateX(30%) scale(0.95)", opacity: 0.9},
+                {transform: "scale(1)", opacity: 1},
             ],
             {
                 duration: OPEN_SWITCH_DURATION * speed,
-                easing: "ease-out",
+                easing: "cubic-bezier(0.2, 0.9, 0.3, 1)",
             }
         );
         setStoredAnimation(appEl, anim, () => {
@@ -546,7 +549,7 @@ function openAppByIDFromIslandWithScript(idApp, script) {
         });
         const anim = appEl.animate([], {
             duration: OPEN_ISLAND_DURATION * speed,
-            easing: "ease-in-out",
+            easing: "cubic-bezier(0.2, 0.9, 0.3, 1)",
             composite: "replace",
         });
         appAnimations[appEl.id] = anim;
@@ -555,10 +558,10 @@ function openAppByIDFromIslandWithScript(idApp, script) {
             runOpenScript(appEl.id);
             timeOutOpeningApp[appEl.id] = null;
             delete appAnimations[appEl.id];
-        }, OPEN_ISLAND_TIMEOUT);
+        }, OPEN_ISLAND_TIMEOUT * speed);
         setTimeout(() => {
             appEl.classList.remove("animationAppOpenFromIsland");
-        }, OPEN_ISLAND_TIMEOUT);
+        }, OPEN_ISLAND_TIMEOUT * speed);
     }
 
     if (script) script();
@@ -592,14 +595,14 @@ function openAppByIDFromCameraBtn(idApp) {
     if (switchingApp) {
         const anim = appEl.animate(
             [
-                {transform: "translateX(120%) scale(0.8)"},
-                {transform: "translateX(80%) scale(0.8)"},
-                {transform: "translateX(40%) scale(0.85)"},
-                {transform: "scale(1)"},
+                {transform: "translateX(120%) scale(0.85)", opacity: 0.5},
+                {transform: "translateX(70%) scale(0.9)", opacity: 0.7},
+                {transform: "translateX(30%) scale(0.95)", opacity: 0.9},
+                {transform: "scale(1)", opacity: 1},
             ],
             {
                 duration: OPEN_SWITCH_DURATION * speed,
-                easing: "ease-out",
+                easing: "cubic-bezier(0.2, 0.9, 0.3, 1)",
             }
         );
         setStoredAnimation(appEl, anim, () => {
@@ -612,7 +615,7 @@ function openAppByIDFromCameraBtn(idApp) {
         });
         const anim = appEl.animate([], {
             duration: OPEN_CAMERA_DURATION * speed,
-            easing: "ease-in-out",
+            easing: "cubic-bezier(0.2, 0.9, 0.3, 1)",
             composite: "replace",
         });
         appAnimations[appEl.id] = anim;
@@ -621,11 +624,11 @@ function openAppByIDFromCameraBtn(idApp) {
             timeOutOpeningApp[appEl.id] = null;
             delete appAnimations[appEl.id];
             runOpenScript(appEl.id);
-        }, OPEN_CAMERA_TIMEOUT);
+        }, OPEN_CAMERA_TIMEOUT * speed);
 
         setTimeout(() => {
             appEl.classList.remove("animationAppOpenFromCameraBtn");
-        }, OPEN_CAMERA_TIMEOUT);
+        }, OPEN_CAMERA_TIMEOUT * speed);
     }
 }
 function cancelIfAnimating(el) {
