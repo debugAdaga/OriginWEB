@@ -1,0 +1,114 @@
+#lockScreen {
+    position: absolute;
+    display: none;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    transition: all calc(0.3s * var(--bg-speedAnimation));
+}
+.phone.off .lockContent {
+    filter: brightness(3);
+}
+.lockContent {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    top: 100px;
+    color: color-mix(in oklab, var(--bg-colorLockClock), #00000000 var(--bg-opacityLockClock));
+    font-family: var(--bg-fontLockClock);
+    transition: all calc(0.4s * var(--bg-speedAnimation)) cubic-bezier(0.26, 0.55, 0.3, 1),
+        display calc(0.4s * var(--bg-speedAnimation)) allow-discrete;
+    translate: var(--bg-lockClockTranslate);
+    scale: var(--bg-scaleLockContent);
+}
+.lockContent div {
+    display: flex;
+    flex-direction: column;
+    transition: all calc(0.4s * var(--bg-speedAnimation));
+}
+.lockContent[data-posclock="center"] div {
+    align-items: center;
+}
+.lockContent[data-posclock="left"] div {
+    align-items: start;
+    transform: translateX(10px);
+}
+.lockContent[data-posclock="right"] div {
+    align-items: end;
+    transform: translateX(-10px);
+}
+.lockClock {
+    font-size: 100px;
+    font-weight: var(--bg-fontWeightLockClock);
+    font-style: normal;
+    /*-webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);*/
+}
+.dateMain {
+    font-size: 20px;
+}
+
+#lockScreen .bottomBtn {
+    position: absolute;
+    display: flex;
+    bottom: 0px;
+    width: calc(100% - 20px);
+    padding: 10px;
+    gap: calc(100% - 80px);
+}
+#lockScreen .bottomBtn .circle {
+    display: flex;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #ffffff00;
+    flex: 0 0 auto;
+    justify-content: center;
+    align-items: center;
+    transition: scale calc(0.1s * var(--bg-speedAnimation));
+    cursor: pointer;
+}
+#lockScreen .bottomBtn .circle:active {
+    transition: scale calc(0.3s * var(--bg-speedAnimation)) cubic-bezier(0.66, 0, 0.58, 1);
+    scale: 1.2;
+}
+#lockScreen .bottomBtn .circle svg {
+    height: 20px;
+    width: 20px;
+    fill: white;
+}
+
+.fingerBtn {
+    position: absolute;
+    height: 55px;
+    width: 85px;
+    border-radius: 50%;
+    bottom: 100px;
+    left: 50%;
+    translate: -50%;
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4;
+}
+.ani_fingerprint {
+    scale: 2.5;
+}
+
+#scaleForOff {
+    transition: transform calc(0.3s * var(--bg-speedAnimation));
+    transform-origin: center;
+    height: 100%;
+    width: 100%;
+    z-index: 3;
+}
+#phone.off #scaleForOff {
+    transform: scale(0.98);
+}
+#phone.off .lockContent div {
+    transform: none;
+}

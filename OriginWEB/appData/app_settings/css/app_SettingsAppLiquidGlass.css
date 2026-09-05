@@ -1,0 +1,14 @@
+#app_SettingsAppLiquidGlass {
+    & .liquidPreview {
+        display: flex;
+        border-radius: 15px;
+        transition: all 0.3s;
+        place-items: center;
+        text-align: center;
+        font-size: 25px;
+        width: 111px;
+        height: 41px;
+        justify-content: center;
+        align-items: center;
+    }
+}

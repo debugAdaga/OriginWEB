@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Calculator</title>
+        <style>
+            body {
+                margin: 0;
+                background: var(--bg-appbackground);
+                font-family: Arial, sans-serif;
+                color: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+            } /* For Firefox */
+            body {
+                scrollbar-width: thin;
+                scrollbar-color: #888 #f1f1f100;
+            }
+            body::-webkit-scrollbar {
+                width: 10px;
+                height: 10px;
+            }
+
+            body::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
+
+            body::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 10px;
+            }
+
+            body::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+            .calculator {
+                position: absolute;
+                width: 300px;
+                height: 90%;
+                bottom: 0;
+                align-content: end;
+                scale: 0.9;
+            }
+
+            .screen {
+                text-align: right;
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            #mainDisplay {
+                font-size: 40px;
+                color: white;
+                min-height: 50px;
+
+                width: 100%;
+                overflow: auto;
+            }
+
+            #previewDisplay {
+                width: 100%;
+                font-size: 20px;
+                color: #999;
+                min-height: 25px;
+            }
+
+            .screen {
+                width: 300px;
+                justify-content: flex-end;
+                align-items: flex-end;
+                padding: 0 20px;
+                font-size: 42px;
+                font-weight: 300;
+                box-sizing: border-box;
+                color: white;
+                min-height: 72px;
+                overflow-x: hidden;
+                overflow-y: visible;
+            }
+
+            .keys {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+
+            .btn {
+                width: 55px;
+                height: 55px;
+                border-radius: 50%;
+                border: none;
+                font-size: 24px;
+                color: #ccc;
+                background: #222;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                transition: 0.45s;
+                user-select: none;
+            }
+
+            .btn.op {
+                background: #331818;
+                color: #ff7979;
+            }
+            .btn.equal {
+                background: #ff6d6d;
+                color: #fff;
+            }
+            .btn.red {
+                color: #ff6d6d;
+            }
+
+            .btn:active {
+                transition: 0.15s;
+                transform: scale(0.98);
+                opacity: 0.5;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="calculator">
+            <div class="screen">
+                <div id="mainDisplay">0</div>
+                <div id="previewDisplay"></div>
+            </div>
+
+            <div class="keys">
+                <button class="btn gray">mc</button>
+                <button class="btn gray">m+</button>
+                <button class="btn gray">m-</button>
+                <button class="btn gray">mr</button>
+
+                <button class="btn orange" data-action="clear">AC</button>
+                <button class="btn gray" data-action="backspace">⌫</button>
+                <button class="btn gray operator" data-op="+-">+/−</button>
+                <button class="btn red operator" data-op="/">:</button>
+
+                <button class="btn gray number">7</button>
+                <button class="btn gray number">8</button>
+                <button class="btn gray number">9</button>
+                <button class="btn red operator" data-op="*">×</button>
+
+                <button class="btn gray number">4</button>
+                <button class="btn gray number">5</button>
+                <button class="btn gray number">6</button>
+                <button class="btn red operator" data-op="-">−</button>
+
+                <button class="btn gray number">1</button>
+                <button class="btn gray number">2</button>
+                <button class="btn gray number">3</button>
+                <button class="btn red operator" data-op="+">+</button>
+
+                <button class="btn gray number">00</button>
+                <button class="btn gray number">0</button>
+                <button class="btn gray number">.</button>
+                <button class="btn equal" data-action="equal">=</button>
+            </div>
+        </div>
+
+        <script>
+            const mainDisplay = document.getElementById("mainDisplay");
+            const previewDisplay = document.getElementById("previewDisplay");
+
+            let expression = "";
+            let justCalculated = false;
+
+            function formatScreen(str) {
+                return str.replace(/\*/g, "×").replace(/\//g, ":");
+            }
+
+            function safeEval(str) {
+                try {
+                    const val = Function("return " + str)();
+                    if (!isFinite(val) || isNaN(val)) return null;
+                    return val;
+                } catch {
+                    return null;
+                }
+            }
+
+            function updatePreview() {
+                if (justCalculated) {
+                    previewDisplay.textContent = "";
+                    return;
+                }
+                const val = safeEval(expression);
+                previewDisplay.textContent = val !== null ? val : "";
+            }
+
+            // ==========================
+            // NÚT SỐ
+            // ==========================
+            document.querySelectorAll(".number").forEach((btn) => {
+                btn.onclick = () => {
+                    if (justCalculated) {
+                        expression = "";
+                        justCalculated = false;
+                    }
+
+                    const n = btn.textContent;
+
+                    expression += n;
+                    mainDisplay.textContent = formatScreen(expression);
+                    updatePreview();
+                    scrollToBottom();
+                };
+            });
+
+            // ==========================
+            // NÚT TOÁN TỬ
+            // ==========================
+            document.querySelectorAll(".operator").forEach((btn) => {
+                btn.onclick = () => {
+                    let op = btn.dataset.op;
+
+                    if (op === "+-") {
+                        if (expression && !isNaN(expression)) {
+                            expression = String(-Number(expression));
+                            mainDisplay.textContent = expression;
+                            updatePreview();
+                        }
+                        return;
+                    }
+
+                    if (!expression) return;
+
+                    justCalculated = false;
+
+                    const last = expression[expression.length - 1];
+                    if ("+-*/".includes(last)) {
+                        expression = expression.slice(0, -1);
+                    }
+
+                    expression += op;
+                    mainDisplay.textContent = formatScreen(expression);
+                    updatePreview();
+                    scrollToBottom();
+                };
+            });
+
+            // ==========================
+            // AC
+            // ==========================
+            document.querySelector("[data-action='clear']").onclick = () => {
+                expression = "";
+                mainDisplay.textContent = "0";
+                previewDisplay.textContent = "";
+            };
+
+            // ==========================
+            // BACKSPACE
+            // ==========================
+            document.querySelector("[data-action='backspace']").onclick = () => {
+                if (!expression) return;
+                expression = expression.slice(0, -1);
+                mainDisplay.textContent = expression ? formatScreen(expression) : "0";
+                updatePreview();
+                scrollToBottom();
+            };
+
+            // ==========================
+            // BẰNG (=)
+            // ==========================
+            document.querySelector("[data-action='equal']").onclick = () => {
+                const result = safeEval(expression);
+                if (result === null) return;
+
+                mainDisplay.textContent = result;
+                previewDisplay.textContent = "";
+                expression = String(result);
+                justCalculated = true;
+                scrollToBottom();
+            };
+
+            function scrollToBottom() {
+                mainDisplay.scrollLeft = mainDisplay.scrollWidth;
+            }
+        </script>
+    </body>
+</html>

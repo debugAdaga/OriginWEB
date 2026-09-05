@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            @font-face {
+                font-family: "digital-7";
+                src: url("/originData/font/digital-7.ttf") format("truetype");
+            }
+            body {
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: none;
+                overflow: hidden;
+            }
+            p {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                translate: -50% -50%;
+                font-size: 20px;
+                color: white;
+            }
+            .startBtn {
+                cursor: pointer;
+                position: absolute;
+                display: flex;
+                top: 50%;
+                left: 50%;
+                translate: -50% -50%;
+                padding: 5px;
+                background: orange;
+                border-radius: 50%;
+                user-select: none;
+                height: 60px;
+                width: 60px;
+                font-size: 20px;
+                font-family: sans-serif;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                transition: all 0.1s;
+            }
+            .startBtn:active {
+                scale: 0.95;
+            }
+            .screen {
+                position: absolute;
+                top: calc(50% - 70px);
+                left: 50%;
+                translate: -50% -50%;
+                background: black;
+                justify-content: center;
+                align-items: center;
+                font-size: 50px;
+                color: white;
+                font-size: 30px;
+                font-family: "digital-7", monospace;
+                padding: 10px;
+                background-color: #80808052;
+                border-radius: 8px;
+                min-width: 150px;
+                text-align: end;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="screen">00:00:00</div>
+        <p class="startBtn">start</p>
+    </body>
+
+    <script>
+        const id = window.parent.getIdApp(window.frameElement);
+        const screen = document.querySelector(".screen");
+        const startBtn = document.querySelector(".startBtn");
+        startBtn.hander = function (e) {
+            if (startBtn.textContent === "start") {
+                window.parent.addIsland(
+                    "clock",
+                    window.parent.getIdApp(window.frameElement),
+                    "clock",
+                    "",
+                    "auto",
+                    () => {
+                        window.parent.closeIsland();
+                        setTimeout(() => {
+                            window.parent.removeIsland(window.parent.getIdApp(window.frameElement));
+                            h = 0;
+                            m = 0;
+                            s = 0;
+                            screen.textContent = "00:00:00";
+                        }, 520);
+                    },
+                    window.parent.getIframeByIdApp(window.parent.getIdApp(window.frameElement)).contentWindow.stopTimer
+                );
+                startTimer();
+            } else {
+                stopTimer(e);
+            }
+        };
+
+        startBtn.addEventListener("click", startBtn.hander);
+
+        let h = 0;
+        let m = 0;
+        let s = 0;
+
+        let idTimer = null;
+        function startTimer() {
+            if (idTimer) return;
+
+            startBtn.textContent = "pause";
+
+            idTimer = setInterval(() => {
+                s++;
+                if (s === 60) {
+                    s = 0;
+                    m++;
+                }
+                if (m === 60) {
+                    m = 0;
+                    h++;
+                }
+
+                const hh = String(h).padStart(2, "0");
+                const mm = String(m).padStart(2, "0");
+                const ss = String(s).padStart(2, "0");
+
+                window.parent.updateIsland(id, "text", `${hh}:${mm}:${ss}`);
+
+                screen.textContent = `${hh}:${mm}:${ss}`;
+            }, 1000);
+        }
+
+        function stopTimer(e) {
+            const el = e.currentTarget;
+
+            startBtn.textContent = "start";
+
+            console.log("asd");
+            if (el.dataset.btn === "resume") {
+                el.dataset.btn = "pause";
+                startTimer();
+            } else {
+                el.dataset.btn = "resume";
+                if (idTimer) clearInterval(idTimer);
+                idTimer = null;
+            }
+        }
+    </script>
+</html>

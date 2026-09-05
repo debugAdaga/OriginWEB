@@ -1,0 +1,63 @@
+.setUpScreen {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 9998;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: local;
+    background-image: var(--bg-wallpaperHome);
+    display: none;
+
+    & .new__bg {
+        position: absolute;
+        top: 50%;
+        translate: 0 -50%;
+        height: 100%;
+        width: 100%;
+        min-height: 500px;
+        display: flex;
+        justify-content: center;
+        z-index: 12;
+        backdrop-filter: blur(10px) brightness(0.7);
+    }
+    & .hello__div {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        margin: 0 auto;
+        text-align: center;
+        width: 70%;
+        max-width: 600px;
+    }
+    & .hello__svg {
+        fill: none;
+        stroke: #ffffff;
+        stroke-linecap: round;
+        stroke-miterlimit: 10;
+        stroke-width: 48px;
+        stroke-dasharray: 5800px;
+        stroke-dashoffset: 5800px;
+        animation: anim__hello linear 5s forwards;
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        margin: 0 auto;
+        text-align: center;
+    }
+}
+
+@keyframes anim__hello {
+    0% {
+        stroke-dashoffset: 5800;
+    }
+    25% {
+        stroke-dashoffset: 5800;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}

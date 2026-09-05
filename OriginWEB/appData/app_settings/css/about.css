@@ -1,0 +1,135 @@
+#imageOceanWebpOriginOSLogoAbout {
+    width: calc(100% - 10px);
+    aspect-ratio: 41 / 28;
+    max-width: 350px;
+    border-radius: calc(var(--bg-borderRadiusSys) * 0.9);
+    padding: 0;
+    border: none;
+    transition: scale 0.4s, opacity 0.15s;
+}
+#imageOceanWebpOriginOSLogoAbout:active {
+    transition: scale 0.15s, opacity 0.15s;
+    scale: 0.96;
+}
+#OriginOSocean {
+    margin-top: 30px;
+    width: calc(100% - 40px);
+    aspect-ratio: 1248 / 1848;
+    max-width: 300px;
+    background: url("/OriginWEB/originData/OriginOS6ocean.webp") no-repeat center center/cover;
+    transition: scale 0.4s, opacity 0.15s;
+}
+#OriginOSocean:active {
+    transition: scale 0.15s, opacity 0.15s;
+    opacity: 0.7;
+    scale: 0.98;
+}
+
+.aboutI4Item {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 55px;
+    justify-content: start;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    padding: none;
+}
+.settingsItem.aboutI4Item {
+    background: none;
+}
+
+.aboutI4ItemText {
+    font-family: "Noto sans", sans-serif;
+    font-size: 14px;
+    color: var(--bg-color);
+    text-align: start;
+}
+
+.aboutI4ItemTextSmall {
+    display: flex;
+    font-family: "Noto sans", sans-serif;
+    font-weight: bold;
+    font-size: 10px;
+    color: gray;
+}
+.aboutI4ItemTextSmall .icon_element_cheos {
+    height: 16px;
+    width: 16px;
+}
+
+.icon_element_cheos {
+    position: static;
+    height: 20px;
+    width: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M320-39 210-148l332-332-332-332 110-110 441 442L320-39Z' fill='gray' /%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.icon_element_red {
+    height: 14px;
+    background: #f65268;
+    margin-right: 5px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    flex: 0 0 4px;
+}
+
+#rightBigTextNameDeviceInAbout {
+    width: calc(100% - 20px);
+    font-size: 20px;
+    font-family: "Noto sans", sans-serif;
+    font-weight: bold;
+    padding: 20px 0px 20px 0px;
+}
+
+.divider1 {
+    width: calc(100% - 50px);
+    height: 1px;
+    background: gray;
+}
+
+.powered-logo {
+    margin-top: 15px;
+    width: 100%;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1;
+    user-select: none;
+    font-family: "Noto Sans", sans-serif;
+    transform-origin: center;
+    transition: all 0.15s;
+}
+.powered-logo:active {
+    opacity: 0.5;
+}
+
+.powered-logo .powered {
+    width: 119px;
+    font-size: 12px;
+    color: var(--bg-color);
+    font-weight: 500;
+}
+
+.powered-logo .brand {
+    width: 120px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.powered-logo .brand .html-text {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--bg-color);
+}
+
+.powered-logo .brand img {
+    width: 30px;
+    height: auto;
+    display: block;
+}

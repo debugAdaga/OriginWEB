@@ -1,0 +1,93 @@
+# default phone type
+device.type=phone
+
+
+
+camera.height=17px
+camera.width=17px
+camera.borderRadius=17px
+camera.marginTop=10px
+
+island.marginTop=10px
+island.open.marginTop=10px
+
+statusBar.height=40px
+
+
+# deivce type = phone
+phone.2ndScreen.height=0
+phone.2ndScreen.width=0
+
+phone.height=617
+phone.width=280
+
+phone.borderRadius=38px
+
+phone.button.width=4px
+phone.borderInside.size=10px
+phone.borderOutside.size=10px
+
+phone.appScreen.rols=4
+phone.appScreen.rows=6
+
+device.phone.name=vivo x300 pro
+
+
+# deivce type = tablet
+tablet.2ndScreen.height=0
+tablet.2ndScreen.width=0
+
+tablet.height=620
+tablet.width=517
+
+tablet.borderRadius=15px
+
+tablet.button.width=4px
+tablet.borderInside.size=19px
+tablet.borderOutside.size=10px
+
+tablet.appScreen.rols=6
+tablet.appScreen.rows=6
+
+device.tablet.name=Vivo Pad 5 Pro
+
+
+# deivce type = computer
+computer.2ndScreen.height=0
+computer.2ndScreen.width=0
+
+computer.height=580
+computer.width=800
+
+computer.borderRadius=10px
+
+computer.button.width=4px
+computer.borderInside.size=19px
+computer.borderOutside.size=10px
+
+computer.appScreen.rols=9
+computer.appScreen.rows=5
+
+device.computer.name=vivo x300 pro
+
+
+# deivce type = fold
+fold.2ndScreen.height=580
+fold.2ndScreen.width=540
+
+fold.height=627
+fold.width=270
+
+fold.borderRadius=10px
+
+fold.button.width=3px
+fold.borderInside.size=12px
+fold.borderOutside.size=8px
+
+fold.appScreen.rols=4
+fold.appScreen.rows=6
+
+fold.ed.appScreen.rols=8
+fold.ed.appScreen.rows=6
+
+device.fold.name=vivo x fold 5

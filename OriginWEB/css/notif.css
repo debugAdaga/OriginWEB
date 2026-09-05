@@ -1,0 +1,236 @@
+/* tất cả đều nằm sau .notificationStacked để không ảnh hưởng CSS khác */
+.notificationStacked {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30px);
+    display: flex;
+    justify-content: center;
+    z-index: 10002;
+}
+
+.notificationStacked .notifItem {
+    position: absolute;
+    width: 230px;
+    color: var(--bg-color);
+    font-family: "Noto sans", sans-serif;
+    border-radius: 22px;
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    opacity: 0;
+    transition: all 0.25s, box-shadow 0.3s, background-color 0.3s, backdrop-filter 0s;
+    translate: 0 -110px;
+    animation: notifItem 0.25s ease forwards, notifItem2 0.5s cubic-bezier(0.35, 1.4, 0.33, 1);
+}
+@keyframes notifItem {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes notifItem2 {
+    from {
+        translate: 0;
+    }
+    to {
+        translate: 0 50px;
+    }
+}
+.notificationStacked .notifItem:nth-last-child(1) {
+    transform: translateY(0) scale(1);
+    z-index: 5;
+    animation-delay: 0.1s;
+}
+
+/* tầng 2 (2nd last) */
+.notificationStacked .notifItem:nth-last-child(2) {
+    transform: translateY(50%) scale(0.98);
+    z-index: 4;
+    animation-delay: 0.05s;
+}
+
+/* tầng 3 (3rd last) */
+.notificationStacked .notifItem:nth-last-child(3) {
+    transform: translateY(75%) scale(0.96);
+    z-index: 3;
+}
+
+/* Các phần tử cũ hơn (không nằm trong 3 phần tử cuối) -> ẩn mờ dưới cùng */
+.notificationStacked .notifItem:not(:nth-last-child(-n + 3)) {
+    transition: all 0.25s, translate 0s, backdrop-filter 0s;
+    transform: translateY(75%) scale(0.5);
+    z-index: 1;
+    visibility: hidden;
+    pointer-events: none;
+    backdrop-filter: blur(0px);
+}
+.notificationStacked .notifItem.show {
+    translate: 0 50px;
+}
+.notificationStacked .notifItem:active {
+    scale: 0.95;
+}
+
+.notificationStacked .notifImg {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.notificationStacked .notifImg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+}
+
+.notificationStacked .notifText {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notificationStacked .notifName {
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.notificationStacked .notifContent {
+    font-size: 11px;
+    opacity: 0.75;
+}
+
+/*on lock screen*/
+
+.stackWrapper {
+    left: 50%;
+    translate: -50% 0;
+    position: absolute;
+    bottom: 170px;
+    width: calc(0.85px * var(--bg-widthPhone));
+    max-height: 200px;
+    overflow: visible;
+    z-index: 3;
+    &::after {
+        content: "";
+        display: flex;
+        height: 500px;
+    }
+}
+
+.stackContainer {
+    width: calc(0.85px * var(--bg-widthPhone));
+    pointer-events: auto; /* container nhận pointer */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: opacity 0.3s;
+}
+
+/* Item chung */
+
+#lockScreen .stackContainer .stackItem {
+    width: calc(0.85px * var(--bg-widthPhone));
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    color: var(--bg-color);
+    font-family: "Noto sans", sans-serif;
+    border-radius: 22px;
+    padding: 8px;
+    gap: 10px;
+    margin-bottom: 10px;
+    z-index: 10;
+    transition: 0.08s, scale 0.3s, box-shadow 0.3s, background-color 0.3s, backdrop-filter 0s;
+    overflow: hidden;
+    animation: lockScreenstackContainerstackItem 0.6s cubic-bezier(0.35, 1.3, 0.33, 1);
+}
+#phone.off #lockScreen .stackContainer .stackItem {
+    scale: 0.9;
+}
+#phone.off #lockScreen .stackWrapper {
+    display: none;
+}
+@keyframes lockScreenstackContainerstackItem {
+    from {
+        height: 0;
+        width: 0;
+    }
+    to {
+        width: calc(0.85px * var(--bg-widthPhone));
+        height: 50px;
+    }
+}
+@keyframes lockScreenstackContainerstackItemimg {
+    from {
+        height: 0;
+    }
+    to {
+        height: 50px;
+    }
+}
+#lockScreen .stackContainer::before {
+    content: "";
+    display: flex;
+}
+
+#lockScreen .stackContainer .stackItem:active {
+    transition: 0.05s, scale 0.15s;
+    scale: 0.95;
+}
+
+#lockScreen .stackContainer .stackItem img {
+    pointer-events: none;
+    height: 50px;
+    animation: lockScreenstackContainerstackItemimg 0.6s cubic-bezier(0.35, 1.3, 0.33, 1);
+    border-radius: 15px;
+    object-fit: cover;
+    border: none;
+    display: flex;
+    flex: 0 auto;
+}
+
+#lockScreen .stackContainer .stackItem .notifText {
+    width: calc(0.85px * var(--bg-widthPhone));
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#lockScreen .stackContainer .stackItem .notifName {
+    width: calc(0.85px * var(--bg-widthPhone));
+    font-weight: 600;
+    font-size: 14px;
+}
+
+#lockScreen .stackContainer .stackItem .notifContent {
+    width: calc(0.85px * var(--bg-widthPhone));
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+#lockScreen .notifBtn {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    translate: -50%;
+    border-radius: 15px;
+    transition: all 0.3s;
+    color: #fff;
+    padding: 8px;
+    padding-inline: 12px;
+    z-index: 11;
+}
+#lockScreen .notifBtn.hidden {
+    opacity: 0;
+    transform: scale(0.9);
+}

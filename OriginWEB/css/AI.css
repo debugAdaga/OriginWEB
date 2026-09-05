@@ -1,0 +1,87 @@
+.ai {
+    --inner-x: 25;
+    --inner-y: 25;
+    --inner-w: calc(var(--bg-widthPhone) - 50);
+    --inner-h: calc(var(--bg-heightPhone)- 50);
+    --inner-r: calc(41 / var(--bg-widthPhone) - 25);
+
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+
+    & .ai-box {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        filter: blur(10px);
+    }
+
+    .ai-box::before {
+        content: "";
+        position: absolute;
+        inset: -10px;
+
+        /* độ dày viền */
+        padding: 20px;
+
+        /* bo góc quyết định hình */
+        border-radius: calc(var(--bg-borderRadiusPhone) + 10px);
+
+        background: conic-gradient(
+                from var(--angle),
+                rgba(52, 168, 82, 0),
+                rgba(52, 168, 82, 1),
+                rgba(255, 211, 20, 1),
+                rgba(255, 70, 65, 1),
+                rgba(49, 134, 255, 1),
+                rgba(49, 134, 255, 0.5),
+                rgba(49, 134, 255, 0),
+                rgba(52, 168, 82, 0)
+            )
+            border-box;
+
+        /* ===== SUBTLE EDGE DISTORT ===== */
+        mask:
+    /* khoét giữa */ linear-gradient(#000 0 0) content-box,
+            /* cạnh trái */ radial-gradient(180% 120% at 0% 50%, #000 66%, transparent 69%),
+            /* cạnh phải */ radial-gradient(180% 120% at 100% 50%, #000 66%, transparent 69%),
+            /* cạnh trên */ radial-gradient(120% 180% at 50% 0%, #000 66%, transparent 69%),
+            /* cạnh dưới */ radial-gradient(120% 180% at 50% 100%, #000 66%, transparent 69%);
+
+        -webkit-mask:
+    /* khoét giữa */ linear-gradient(#000 0 0) content-box,
+            /* cạnh trái */ radial-gradient(180% 120% at 0% 50%, #000 66%, transparent 69%),
+            /* cạnh phải */ radial-gradient(180% 120% at 100% 50%, #000 66%, transparent 69%),
+            /* cạnh trên */ radial-gradient(120% 180% at 50% 0%, #000 66%, transparent 69%),
+            /* cạnh dưới */ radial-gradient(120% 180% at 50% 100%, #000 66%, transparent 69%);
+
+        mask-composite: intersect, intersect, intersect, intersect, intersect;
+        -webkit-mask-composite: xor, destination-in, destination-in, destination-in, destination-in;
+
+        animation: spin 7.5s linear infinite, edgeDrift 14s ease-in-out infinite;
+    }
+
+    z-index: 100000;
+}
+@keyframes spin {
+    to {
+        --angle: 360deg;
+    }
+}
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+@keyframes edgeDrift {
+    0%,
+    100% {
+        -webkit-mask-position: 0 0, 0% 50%, 100% 50%, 50% 0%, 50% 100%;
+    }
+    50% {
+        -webkit-mask-position: 0 0, 2% 51%, 98% 49%, 49% 2%, 51% 98%;
+    }
+}

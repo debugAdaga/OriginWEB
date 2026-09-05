@@ -1,0 +1,835 @@
+:root {
+    --appscreen-grid-col: 4;
+    --appscreen-grid-row: 6;
+    --icon-px: 55px;
+}
+
+#allAppIconScreen {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-origin: center;
+    transition: all calc(0.4s * var(--bg-speedAnimation)), opacity calc(0.1s * var(--bg-speedAnimation));
+}
+#allAppIconScreen.hidden {
+    transition: all calc(0.4s * var(--bg-speedAnimation)), opacity 0s;
+    opacity: 0;
+}
+#horizontalScrollAppScreen {
+    position: absolute;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 100%;
+    gap: 10px;
+    scroll-snap-type: x mandatory;
+    align-items: start;
+    scrollbar-width: none;
+    transition: opacity calc(0.4s * var(--bg-speedAnimation));
+}
+#horizontalScrollAppScreen::-webkit-scrollbar {
+    display: none;
+}
+#horizontalScrollAppScreen::after,
+#horizontalScrollAppScreen::before {
+    content: "";
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.favApp,
+#favApp {
+    position: absolute;
+    display: grid;
+
+    grid-template-columns: repeat(var(--appscreen-grid-col), var(--icon-px));
+    grid-template-rows: var(--icon-px);
+
+    column-gap: var(--fav-gap-x, 0px);
+
+    width: calc(100% - 28px);
+    height: calc(var(--icon-px) * var(--bg-scaleIcon) * var(--icon-scaleBPS));
+    min-height: var(--icon-px);
+
+    padding: 6px 2px;
+    background: rgba(255, 255, 255, calc(var(--bg-liquidOpacity) + 20%));
+    bottom: var(--nav-padding);
+
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
+
+    border-radius: max(14px, calc(var(--bg-borderRadiusPhone) - 14px));
+    z-index: 9;
+    backdrop-filter: blur(5px);
+
+    transition: opacity calc(0.4s * var(--bg-speedAnimation));
+}
+
+.phone.computerMode {
+    #favApp {
+        opacity: 1 !important;
+        width: var(--bg-widthPhone);
+        height: 30px;
+        min-height: unset;
+        transform: none !important;
+
+        grid-template-columns: repeat(var(--appscreen-grid-col), var(--icon-px));
+
+        .iconApp {
+            height: 35px !important;
+            width: 35px !important;
+            border-radius: calc(var(--bg-borderRadiusIcon) / 2);
+        }
+    }
+}
+
+#favApp.hiddenBackground,
+.favApp.hiddenBackground {
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    backdrop-filter: none !important;
+}
+#blurAllApp {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 11;
+    pointer-events: none;
+    transition: all calc(0.4s * var(--bg-speedAnimation)),
+        display calc(0.4s * var(--bg-speedAnimation)) ease allow-discrete;
+    border-radius: var(--bg-borderRadiusPhone);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+}
+
+#allAppIconScreen.open {
+    transform: scale(0.86);
+}
+#allAppIconScreen.open #blurAllApp {
+    transform: scale(1.16279069767);
+
+    transition: all calc(0.15s * var(--bg-speedAnimation));
+    background: #00000030;
+    /*backdrop-filter: blur(20px);*/
+    opacity: 1;
+}
+
+#allAppIconScreen.scaleForMovingApp {
+    transition: transform calc(0.3s * var(--bg-speedAnimation));
+    transform: scale(0.95);
+}
+#allAppIconScreen.scaleForMovingApp #blurAllApp {
+    display: block !important;
+    transform: scale(1.05263157895);
+
+    background: #00000030;
+    /*backdrop-filter: blur(15px);*/
+    opacity: 1;
+    animation: opacity0to1 calc(0.4s * var(--bg-speedAnimation)) ease;
+}
+
+/* edit homscreen */
+.editorHomeScreen {
+    position: absolute;
+    display: flex;
+    width: calc(100% - 20px);
+    height: calc(100% - 70px);
+    top: 50%;
+    translate: 0 -50%;
+    transition: all calc(0.4s * var(--bg-speedAnimation)) allow-discrete;
+    transform: scale(1.5);
+    transform-origin: center;
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+.editorHomeScreen .top div {
+    display: flex;
+    padding: 5px 9px;
+    border-radius: 50px;
+    font-family: "noto sans", sans-serif;
+    font-size: 12px;
+    color: white;
+    pointer-events: all;
+    transition: all 0.6s;
+}
+
+.editorHomeScreen .bottom div {
+    display: flex;
+    border-radius: 50px;
+    font-family: "noto sans", sans-serif;
+    font-size: 12px;
+    color: white;
+    pointer-events: all;
+    transition: all 0.6s;
+    padding: 15px 15px;
+    border-radius: 23px;
+}
+.editorHomeScreen svg {
+    height: 24px;
+    width: 24px;
+    fill: #fff;
+}
+.editorHomeScreen .menuSettings {
+    width: 100%;
+    padding: 9px;
+    padding-bottom: 30px;
+    display: flex;
+    position: absolute;
+    background: var(--bg-appbackground);
+    pointer-events: all;
+    left: 50%;
+    translate: -50% 0;
+    bottom: -50px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-left-radius: var(--bg-borderRadiusPhone);
+    border-bottom-right-radius: var(--bg-borderRadiusPhone);
+
+    color: var(--bg-color);
+    flex-direction: column;
+    transform: translateY(130%);
+    transition: all 0.4s;
+}
+.editorHomeScreen .menuSettings.open {
+    transform: none;
+}
+
+#allAppIconScreen.scaleForEdit {
+    transition: transform calc(0.6s * var(--bg-speedAnimation)) calc(0.3s * var(--bg-speedAnimation))
+        cubic-bezier(0.33, 1.28, 0.31, 1);
+    transform: scale(0.9);
+    animation: zoomIn1to0_9 calc(0.6s * var(--bg-speedAnimation));
+}
+#allAppIconScreen.scaleForEdit #blurAllApp {
+    display: block !important;
+    transform: scale(1.05263157895);
+
+    background: #00000030;
+    /*backdrop-filter: blur(15px);*/
+    opacity: 0;
+}
+#allAppIconScreen.scaleForEdit .iconApp {
+    pointer-events: none !important;
+}
+#allAppIconScreen.scaleForEdit #favApp {
+    opacity: 0;
+}
+.phone:has(#allAppIconScreen.scaleForEdit) .editorHomeScreen {
+    transition: all calc(0.6s * var(--bg-speedAnimation)) calc(0.4s * var(--bg-speedAnimation))
+        cubic-bezier(0.33, 1.28, 0.31, 1);
+    opacity: 1;
+    transform: none;
+}
+.phone:has(.editorHomeScreen .menuSettings.open) #allAppIconScreen {
+    transition: all calc(0.4s * var(--bg-speedAnimation));
+    transform: scale(1) translateY(-50%);
+}
+.phone:has(.editorHomeScreen .menuSettings.open) #favApp {
+    opacity: 1 !important;
+}
+.phone:has(.editorHomeScreen .menuSettings.open) #horizontalScrollAppScreen {
+    opacity: 0 !important;
+}
+
+/* end of edit homscreen */
+
+.appScreen {
+    width: calc(100% - 30px);
+    height: calc(100% - 180px);
+    margin: 15px;
+    margin-top: 45px;
+
+    display: grid;
+
+    /* 6 cột × 4 hàng cố định */
+    grid-template-columns: repeat(var(--appscreen-grid-col), var(--icon-px));
+    grid-template-rows: repeat(var(--appscreen-grid-row), var(--icon-px));
+
+    /* căn toàn bộ grid */
+    justify-content: center;
+    align-content: center;
+
+    /* gap do JS set */
+    column-gap: var(--gap-x, 0px);
+    row-gap: var(--gap-y, 0px);
+
+    overflow: visible;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+}
+
+.iconApp {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    border-radius: var(--bg-borderRadiusIcon);
+    transition: transform calc(0.2s * var(--bg-speedAnimation)), translate calc(0.3s * var(--bg-speedAnimation)),
+        filter calc(0.1s * var(--bg-speedAnimation)), scale calc(0.1s * var(--bg-speedAnimation));
+    pointer-events: all;
+    z-index: 9;
+    will-change: transform;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+
+    background-size: var(--icon-bg-size) auto;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.iconApp.hover {
+    transition: transform calc(0.2s * var(--bg-speedAnimation)), translate calc(0.1s * var(--bg-speedAnimation)),
+        filter calc(0.1s * var(--bg-speedAnimation)), scale calc(0.1s * var(--bg-speedAnimation));
+    transform: scale(1.1);
+}
+.iconApp:active {
+    transform: scale(0.9);
+    filter: brightness(0.8);
+}
+.iconApp::before {
+    content: "";
+    position: absolute;
+    height: calc(100% + 29px);
+    width: calc(100% + 15px);
+    scale: calc(1 / (var(--bg-scaleIcon) * var(--icon-scaleBPS)));
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+}
+.iconApp label {
+    all: unset;
+    position: absolute;
+    font-family: "Fredoka";
+    font-size: 12px;
+    text-align: center;
+    top: 100%;
+    left: 50%;
+    translate: -50%;
+    pointer-events: none;
+    max-height: 24px;
+    width: calc(72px * (1 / (var(--bg-scaleIcon) * var(--icon-scaleBPS))));
+    transform: scale(var(--bg-scaleIconName));
+
+    color: rgba(255, 255, 255, 0.9);
+    mix-blend-mode: difference;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.iconApp.hidden {
+    background: none !important;
+}
+
+.iconApp {
+    --w: 1;
+    --h: 1;
+    --s: calc(var(--bg-scaleIcon) * var(--icon-scaleBPS));
+    scale: var(--s);
+}
+
+.iconApp[data-size="1x2"] {
+    --w: 2;
+    --h: 1;
+    --s: calc(1 + ((var(--bg-scaleIcon) * var(--icon-scaleBPS)) - 1) / var(--w));
+    scale: var(--s);
+    height: calc(100% * var(--s));
+    translate: 0 calc(50% * (1 - var(--s)));
+}
+.iconApp[data-size="2x1"] {
+    --w: 1;
+    --h: 2;
+    --s: calc(1 + ((var(--bg-scaleIcon) * var(--icon-scaleBPS)) - 1) / var(--h));
+    scale: var(--s);
+    width: calc(100% * var(--s));
+    translate: calc(50% * (1 - var(--s))) 0;
+}
+.iconApp[data-size="2x2"] {
+    --w: 2;
+    --h: 2;
+    --s: calc(1 + ((var(--bg-scaleIcon) * var(--icon-scaleBPS)) - 1) / ((var(--w) + var(--h)) / 2));
+    scale: var(--s);
+}
+.iconApp[data-size="1x2"]::before,
+.iconApp[data-size="2x1"]::before,
+.iconApp[data-size="2x2"]::before {
+    scale: calc(1 / var(--s));
+}
+.previewIcon[data-size="1x2"],
+.app[data-size="1x2"]::before,
+.iconApp[data-size="1x2"],
+.iconApp[data-size="1x2"],
+.app[data-size="1x2"]::before,
+.previewIcon[data-size="1x2"] {
+    background-size: auto var(--icon-bg-size1x2) !important;
+}
+
+#favApp .iconApp label {
+    display: none !important;
+}
+#phone.hideIconText .iconApp label {
+    display: none;
+}
+
+#pager {
+    position: absolute;
+    display: flex;
+    gap: 4px;
+    padding: 7px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, calc(var(--bg-liquidOpacity) + 20%));
+    top: -30px;
+}
+
+#pager .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    opacity: 0.6;
+    transition: transform calc(0.2s * var(--bg-speedAnimation)), opacity calc(0.2s * var(--bg-speedAnimation));
+}
+
+#pager .dot.active {
+    opacity: 1;
+    background: #fff;
+}
+
+/*@keyframes previewIconAnimation {
+    from {
+        box-shadow: 0 0 0rem aqua;
+    }
+    to {
+        box-shadow: 0 0 3rem aqua;
+    }
+}*/
+.previewIcon {
+    /* preview icon for moving icon*/
+    position: absolute;
+    border-radius: calc(var(--bg-borderRadiusIcon) * var(--bg-scaleIcon) * var(--icon-scaleBPS));
+    pointer-events: all;
+    z-index: 9999;
+    /* animation: previewIconAnimation calc(0.4s * var(--bg-speedAnimation));*/
+    transition: all calc(0.02s * var(--bg-speedAnimation));
+    pointer-events: all;
+    cursor: grab;
+    /* box-shadow: 0 0 3rem aqua;*/
+}
+.previewIcon:active {
+    cursor: grabbing;
+}
+.previewIcon .containerPreview {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    translate: -50% -100%;
+    padding: 3px;
+    border-radius: calc(var(--bg-borderRadiusSys) - var(--bg-borderRadiusSys) / 1.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform-origin: bottom;
+    animation: animationForPreviewIcon 0.3s ease;
+    transition: all 0.2s;
+    width: 70px;
+}
+.previewIcon .containerPreview.bottom {
+    top: auto;
+    bottom: -10px;
+    translate: -50% 100%;
+    transform-origin: top;
+}
+@keyframes animationForPreviewIcon {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.4);
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: none;
+        padding: 3px;
+    }
+}
+.previewIcon .containerPreview.hidden {
+    scale: 0.4;
+    opacity: 0;
+}
+.previewIcon .containerPreview button {
+    all: unset;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    font-family: "Noto sans", sans-serif;
+    color: var(--bg-color);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: calc(var(--bg-borderRadiusSys) - var(--bg-borderRadiusSys) / 1.5 - 3px);
+    transition: background-color 0.2s;
+    width: calc(100% - 10px);
+    color: white;
+}
+.previewIcon .containerPreview button:active {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.previewIcon .containerPreview button svg {
+    width: 11px;
+    height: 11px;
+    fill: currentColor;
+    margin-right: 3px;
+    pointer-events: none;
+}
+
+.previewIcon .dropPos {
+    content: "";
+    position: absolute;
+    top: calc(var(--icon-px) * var(--bg-scaleIcon) * var(--icon-scaleBPS) * 1.2 / 2);
+    left: calc(var(--icon-px) * var(--bg-scaleIcon) * var(--icon-scaleBPS) * 1.2 / 2);
+}
+
+.forUpdatePosIcon {
+    position: absolute;
+    background-color: rgba(193, 255, 196, 0.493);
+    width: calc(1px * var(--bg-widthPhone));
+    height: calc(1px * var(--bg-heightPhone));
+    bottom: 0;
+    left: 0;
+}
+
+.app[data-size="2x2"] {
+    --w: 2;
+    --h: 2;
+    --s: calc(1 + ((var(--bg-scaleIcon) * var(--icon-scaleBPS)) - 1) / ((var(--w) + var(--h)) / 2));
+}
+.app[data-size="1x2"] {
+    --w: 2;
+    --h: 1;
+    --s: calc(1 + ((var(--bg-scaleIcon) * var(--icon-scaleBPS)) - 1) / ((var(--w) + var(--h)) / 2));
+}
+.app[data-size="2x1"] {
+    --w: 1;
+    --h: 2;
+    --s: calc(1 + ((var(--bg-scaleIcon) * var(--icon-scaleBPS)) - 1) / ((var(--w) + var(--h)) / 2));
+}
+.app[data-size="1x1"],
+.app:not([data-size]) {
+    --w: 1;
+    --h: 1;
+    --s: calc(1 + ((var(--bg-scaleIcon) * var(--icon-scaleBPS)) - 1) / ((var(--w) + var(--h)) / 2));
+}
+.app {
+    /*div animation for opening app*/
+    display: flex;
+    justify-content: center;
+
+    position: absolute;
+    opacity: 0;
+
+    pointer-events: none;
+    z-index: 10;
+    overflow: hidden;
+
+    border-radius: calc(var(--bg-borderRadiusIcon) * var(--s));
+
+    transition: top calc(0.6s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        border-radius calc(0.6s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        bottom calc(0.6s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        right calc(0.55s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        left calc(0.55s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        translate calc(0.65s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        width calc(0.55s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        height calc(0.55s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        transform calc(0.55s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier),
+        rotate calc(0.4s * var(--bg-speedAnimation)) calc(0.1s * var(--bg-speedAnimation)),
+        z-index calc(0.3s * var(--bg-speedAnimation)), opacity 0s calc(0.8s * var(--bg-speedAnimation)),
+        scale calc(0.4s * var(--bg-speedAnimation)),
+        border-radius calc(0.2s * var(--bg-speedAnimation)) calc(0.1s * var(--bg-speedAnimation));
+    /*rotate: x 180deg;*/
+    will-change: transform, border-radius, width, height, top, bottom, right, left, z-index, opacity;
+}
+
+.app.open {
+    transition: all calc(0.35s * var(--bg-speedAnimation)) var(--animOpeningApp-cubicBezier),
+        translate calc(0.35s * var(--bg-speedAnimation)) cubic-bezier(0, 0.3, 0, 1), opacity 0s,
+        rotate calc(0.3s * var(--bg-speedAnimation)), border-radius calc(0.1s * var(--bg-speedAnimation));
+
+    scale: calc(1 / 0.86);
+    z-index: 30;
+    border-radius: calc(var(--bg-borderRadiusPhone) - 2px) !important;
+    opacity: 1;
+    /*rotate: x 0deg;*/
+    height: 100%;
+    width: 100%;
+}
+@keyframes openAppFromIslandAnimation {
+    0% {
+        height: 10px;
+        width: 20px;
+        transform: translateY(120px);
+        border-radius: 5px;
+        rotate: x 70deg;
+        scale: 0.2 0.9;
+        filter: blur(calc(3 * var(--bg-advancedBlur)));
+    }
+    20% {
+        transform: translateY(70px);
+    }
+    90% {
+        height: calc(1px * var(--bg-heightPhone) - 40px - var(--nav-padding));
+        filter: blur(0px);
+    }
+    100% {
+        transform: translateY(0px);
+        width: calc(1px * var(--bg-widthPhone) - 14px);
+        border-radius: inherit;
+        rotate: 0;
+        scale: 1;
+    }
+}
+
+.app.animationAppOpenFromIsland {
+    perspective: 600px;
+    .appDisplay {
+        border-radius: inherit;
+        transform: translateY(-100%);
+        scale: 1;
+        animation: openAppFromIslandAnimation 0.5s 0.15s cubic-bezier(0.12, 0.42, 0.23, 0.96) forwards;
+    }
+}
+@keyframes openAppFromCameraBtnAnimation {
+    0% {
+        height: 10px;
+        width: 10px;
+        transform: translateY(calc(1px * var(--bg-heightPhone) - 0.27px * var(--bg-heightPhone)));
+        translate: calc(0.6px * var(--bg-widthPhone)) 0;
+        border-radius: 5px;
+        rotate: y 30deg;
+        /*box-shadow: 0 0 14px rgb(255, 255, 255);*/
+    }
+    6% {
+        transform: translateY(calc(1px * var(--bg-heightPhone) - 0.27px * var(--bg-heightPhone)));
+        height: 10px;
+        width: 10px;
+    }
+    /*30% {
+        box-shadow: 0 0 54px rgb(255, 255, 255);
+    }*/
+    60% {
+        translate: 0;
+    }
+    80% {
+        transform: translateY(0px);
+    }
+    85% {
+        height: calc(1px * var(--bg-heightPhone) - 40px - var(--nav-padding));
+    }
+    100% {
+        transform: translateY(0px);
+        width: calc(1px * var(--bg-widthPhone) - 14px);
+        border-radius: inherit;
+        box-shadow: none;
+        rotate: 0;
+    }
+}
+
+.app.animationAppOpenFromCameraBtn {
+    perspective: 600px;
+    .appDisplay {
+        border-radius: inherit;
+        scale: 1;
+        animation: openAppFromCameraBtnAnimation 0.7s ease-out forwards;
+    }
+}
+.app.open::before {
+    /*icon for animation opening app*/
+    transition: all calc(0.4s * var(--bg-speedAnimation)) var(--animOpeningApp-cubicBezier);
+    background-position: top !important;
+    /*rotate: x 0deg;*/
+}
+.app::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transition: all calc(0.55s * var(--bg-speedAnimation)) var(--animClosingApp-cubicBezier);
+    background-position: center !important;
+    /*rotate: x 180deg;*/
+}
+.app.animationAppOpenFromCameraBtn::before,
+.app.animationAppOpenFromIsland::before {
+    display: none;
+}
+.app.animationAppOpenFromCameraBtn,
+.app.animationAppOpenFromIsland {
+    background-color: #00000000 !important;
+}
+
+.app.animationAppOpenFromCameraBtn .appDisplay::after,
+.app.animationAppOpenFromIsland .appDisplay::after {
+    /* blur effect */
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    border-radius: inherit;
+    animation: islandBlurAnimation 0.7s ease-out forwards;
+    backdrop-filter: blur(5px);
+}
+
+.appDisplay {
+    /*application*/
+    position: absolute;
+    display: none;
+    width: calc(1px * var(--bg-widthPhone) - 14px);
+    height: calc(1px * var(--bg-heightPhone) - 40px - var(--nav-padding));
+    overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg-appbackground);
+    color: var(--bg-color);
+    opacity: 0;
+    transition: opacity calc(0.3s * var(--bg-speedAnimation)) ease-in;
+    padding: 40px 7px var(--nav-padding) 7px;
+    transform-origin: top;
+}
+
+.app.open .appDisplay {
+    transition: opacity calc(0.15s * var(--bg-speedAnimation)) calc(0.05s * var(--bg-speedAnimation)),
+        scale calc(0.4s * var(--bg-speedAnimation)) var(--animOpeningApp-cubicBezier);
+    opacity: 1;
+}
+.app.multiClick .appDisplay {
+    transition: none !important;
+}
+
+.appInApp {
+    position: absolute;
+    display: flex;
+    top: 0;
+    width: calc(1px * var(--bg-widthPhone) - 14px);
+    height: calc(1px * var(--bg-heightPhone) - 40px - var(--nav-padding));
+    overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg-appbackground);
+    color: var(--bg-color);
+    opacity: 1;
+    transition: translate calc(0.4s * var(--bg-speedAnimation)), filter calc(0.3s * var(--bg-speedAnimation));
+    padding: 40px 7px var(--nav-padding) 7px;
+    translate: 110%;
+    filter: brightness(0.7);
+    border-radius: calc(var(--bg-borderRadiusPhone) - 2px);
+}
+.appInApp.open {
+    transition: translate calc(0.4s * var(--bg-speedAnimation)), filter calc(0.3s * var(--bg-speedAnimation)),
+        border-radius 0s calc(0.4s * var(--bg-speedAnimation));
+    translate: none;
+    filter: none;
+    border-radius: none;
+}
+.appInApp .backBtnForAppInApp {
+    margin: 15px 0px 10px 0px;
+    width: calc(100% - 20px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-family: "Noto sans", sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    pointer-events: none;
+}
+.appInApp .backBtnForAppInApp:active::before {
+    color: gray;
+}
+.appInApp .backBtnForAppInApp::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-left: 3px solid currentColor;
+    border-bottom: 3px solid currentColor;
+    transform: rotate(45deg);
+    pointer-events: all;
+    transition: color 0.2s;
+}
+
+.centerText {
+    position: absolute;
+    right: 50%;
+    bottom: 50%;
+    translate: 50% 50%;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.iconApp .dynamicIcon.clock {
+    position: absolute;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("/OriginWEB/originData/iconPacks/flat_icons/dynamic_icon/com.android.BBKClock/clock_dial_center_1x1.png");
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+}
+.iconApp .dynamicIcon.clock::before,
+.iconApp .dynamicIcon.clock::after {
+    content: "";
+    position: absolute;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    scale: 1.2;
+}
+.iconApp .dynamicIcon.clock::after {
+    background-image: url("/OriginWEB/originData/iconPacks/flat_icons/dynamic_icon/com.android.BBKClock/clock_hour.png");
+    transform: rotate(180deg);
+    rotate: 105deg;
+}
+.iconApp .dynamicIcon.clock::before {
+    background-image: url("/OriginWEB/originData/iconPacks/flat_icons/dynamic_icon/com.android.BBKClock/clock_minute.png");
+    rotate: 180deg;
+}
+.iconApp[data-size="2x2"] .dynamicIcon.clock::before,
+.iconApp[data-size="2x2"] .dynamicIcon.clock::after {
+    scale: 1.09;
+}
+.iconApp[data-size="1x2"] .dynamicIcon.clock::before,
+.iconApp[data-size="1x2"] .dynamicIcon.clock::after {
+    width: var(--icon-px);
+    height: 100%;
+    scale: 1.09;
+}
+.iconApp[data-size="2x1"] .dynamicIcon.clock::before,
+.iconApp[data-size="2x1"] .dynamicIcon.clock::after {
+    scale: 1.09;
+}
+
+.iconApp[data-size="2x2"] .dynamicIcon.clock {
+    background-size: 93%;
+}
+.iconApp[data-size="2x1"] .dynamicIcon.clocl {
+    background-size: 93%;
+    width: 100%;
+    height: var(--icon-px);
+}
+
+.iconApp[data-size="1x2"] .dynamicIcon.clock {
+    background-size: 93%;
+    width: var(--icon-px);
+    height: 100%;
+}

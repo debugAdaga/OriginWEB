@@ -1,0 +1,72 @@
+#app_SettingsAppSysNav .preview {
+    display: flex;
+    height: 160px;
+    width: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+    justify-content: center;
+    gap: 5px;
+    align-items: end;
+}
+#app_SettingsAppSysNav .preview .phonePreview {
+    background-color: var(--bg-appbackground);
+    translate: 0 -40px;
+    justify-content: center;
+    overflow: visible;
+    display: flex;
+    scale: 0.9;
+    border: solid 3px #373737;
+    pointer-events: none;
+}
+#app_SettingsAppSysNav .preview .phonePreview::after {
+    content: "";
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    border: solid 5px #373737;
+    bottom: -10px;
+    translate: 0 100%;
+}
+#app_SettingsAppSysNav .preview .active .phonePreview::after {
+    border: solid 5px var(--bg-colorDark4System);
+}
+
+#app_SettingsAppSysNav .preview .nav {
+    position: absolute;
+    bottom: 2px;
+    width: 45%;
+    height: 2px;
+    background-color: var(--bg-color);
+}
+
+#app_SettingsAppSysNav .preview .buttonStyle {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    height: 20px;
+    justify-content: center;
+}
+#app_SettingsAppSysNav .preview .buttonStyle button {
+    all: unset;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 30px;
+    border-radius: 70px;
+    transition: background 0.4s;
+}
+#app_SettingsAppSysNav .preview .buttonStyle svg {
+    all: unset;
+    display: block;
+    height: 50%;
+    fill: var(--bg-color);
+}
+
+#app_SettingsAppSysNav .preview .buttonStyle button:active {
+    transition: background 0.1s;
+    background: color-mix(in srgb, var(--bg-color) 30%, transparent);
+}

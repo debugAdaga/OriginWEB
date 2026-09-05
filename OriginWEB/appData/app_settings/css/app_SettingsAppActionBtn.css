@@ -1,0 +1,190 @@
+#app_SettingsAppActionBtn {
+    gap: 5px;
+    & .box {
+        overflow: hidden;
+        width: 100%;
+        height: 450px;
+        display: flex;
+        place-items: center;
+        justify-content: center;
+    }
+    .box:after {
+        content: "";
+        position: absolute;
+        background: linear-gradient(
+            to bottom,
+            var(--bg-appbackground) 0%,
+            rgb(0 0 0 / 0%) 30%,
+            rgba(0, 123, 255, 0) 50%,
+            rgb(0 0 0 / 0%) 70%,
+            var(--bg-appbackground) 100%
+        );
+        height: 454px;
+        width: 100%;
+        pointer-events: none;
+    }
+    & .borderPhonePre {
+        position: relative;
+        height: 1017px;
+        width: 140px;
+        display: flex;
+        place-items: center;
+        justify-content: center;
+        background: var(--bg-phoneColor);
+        box-shadow: inset 0 0 30px #00000090;
+        border-inline: solid 7px color-mix(in srgb, var(--bg-phoneColor) 71%, #000000 29%);
+        transform-style: preserve-3d;
+        perspective-origin: center;
+        overflow: visible;
+        perspective: 800px;
+
+        & .buttonPreview {
+            height: 295px;
+            width: 65px;
+            border-radius: 100px;
+            border: solid 20px color-mix(in srgb, var(--bg-phoneColor) 50%, #000 50%);
+            margin-top: 20px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6), 0 0 10px #ffffff50;
+            transition: all 0.3s;
+            display: flex;
+            place-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            background: var(--bg-phoneColor);
+            translate: 0 0 2px;
+        }
+        & .buttonPreview:active {
+            transition: all 0.12s;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 90px var(--bg-colorDark6System);
+            translate: 0 0 0px;
+        }
+        & svg {
+            height: 50px;
+            width: 50px;
+            fill: color-mix(in srgb, var(--bg-phoneColor) 50%, #000 50%);
+            display: flex;
+            place-items: center;
+            justify-content: center;
+        }
+        & .buttonPreview::after {
+            content: "";
+            position: absolute;
+            border-radius: 100px;
+        }
+    }
+    .screen {
+        position: absolute;
+        top: 0;
+        right: calc(100% + 7px);
+
+        height: 100%;
+        width: 330px;
+        background: #1a1a1a;
+
+        transform-origin: right center;
+        transform: rotateY(90deg) translateX(100%);
+
+        box-sizing: border-box;
+        background-image: var(--bg-wallpaperHome);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    /* 🔹 Viền ngoài – màu phone */
+    .screen::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 9px solid color-mix(in srgb, var(--bg-phoneColor) 80%, #000000 20%);
+        box-sizing: border-box;
+    }
+
+    /* 🔸 Viền trong – màu đen */
+    .screen::after {
+        content: "";
+        position: absolute;
+        inset: 9px;
+        border: 8px solid #000;
+        box-sizing: border-box;
+    }
+}
+
+#app_SettingsAppActionBtn.animate {
+    & .borderPhonePre {
+        animation: app_SettingsAppActionBtnborderPhonePre 8s ease infinite;
+        & .buttonPreview {
+            animation: app_SettingsAppActionBtnbuttonPreview 8s ease infinite;
+        }
+        & svg {
+            animation: app_SettingsAppActionBtnsvg 8s ease infinite;
+        }
+        & .buttonPreview::after {
+            animation: app_SettingsAppActionBtnbuttonPreviewafter 1.6s ease infinite;
+        }
+    }
+}
+
+@keyframes app_SettingsAppActionBtnbuttonPreviewafter {
+    0% {
+        height: 295px;
+        width: 65px;
+        border: solid 20px color-mix(in srgb, var(--bg-colorDark6System) 70%, transparent 30%);
+        opacity: 0;
+        box-shadow: 0 0 50px color-mix(in srgb, var(--bg-colorDark6System) 70%, transparent 30%),
+            inset 0 0 50px color-mix(in srgb, var(--bg-colorDark6System) 70%, transparent 30%);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        height: calc(295px + 150px);
+        width: calc(65px + 150px);
+        border: solid 0px color-mix(in srgb, var(--bg-colorDark6System) 0%, transparent 100%);
+        box-shadow: 0 0 0px color-mix(in srgb, var(--bg-colorDark6System) 0%, transparent 100%),
+            inset 0 0 0px color-mix(in srgb, var(--bg-colorDark6System) 0%, transparent 100%);
+    }
+}
+@keyframes app_SettingsAppActionBtnborderPhonePre {
+    0% {
+        transform: none;
+    }
+    20% {
+        transform: rotate3d(0, 1, 0, 45deg) scale(0.7);
+    }
+    60% {
+        transform: rotate3d(0, 1, 0, 45deg) scale(0.7);
+    }
+    80% {
+        transform: none;
+    }
+}
+@keyframes app_SettingsAppActionBtnbuttonPreview {
+    20% {
+        transform: none;
+    }
+    28% {
+        transform: translateZ(30px);
+    }
+    52% {
+        transform: translateZ(30px);
+    }
+    60% {
+        transform: none;
+    }
+}
+@keyframes app_SettingsAppActionBtnsvg {
+    22% {
+        transform: none;
+    }
+    34% {
+        transform: translateZ(60px);
+    }
+    54% {
+        transform: translateZ(60px);
+    }
+    62% {
+        transform: none;
+    }
+}
