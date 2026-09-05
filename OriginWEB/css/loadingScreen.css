@@ -13,10 +13,9 @@
     width: 13.33333px;
     height: 13.33333px;
     border-radius: 50%;
-    background: #ff4d4d;
+    background: #888888;
     animation-timing-function: cubic-bezier(0.4, 0.6, 0.2, 1);
     will-change: transform, opacity;
-    box-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
 }
 .lds-ellipsis div:nth-child(1) {
     left: 8px;
@@ -64,20 +63,20 @@
     font-family: 'Segoe UI', 'Inter', system-ui, 'Kanit', sans-serif;
     overflow: hidden;
 
-    /* топографический фон */
+    /* топографический фон — чёрно-белый */
     &::before {
         content: '';
         position: absolute;
         inset: 0;
         background:
-            radial-gradient(circle at 20% 30%, rgba(255, 77, 77, 0.04) 0%, transparent 50%),
-            radial-gradient(circle at 80% 70%, rgba(255, 77, 77, 0.03) 0%, transparent 40%),
+            radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
             repeating-conic-gradient(from 0deg at 50% 50%,
                 transparent 0deg, transparent 3deg,
-                rgba(255, 77, 77, 0.02) 3deg, rgba(255, 77, 77, 0.02) 4deg),
+                rgba(255, 255, 255, 0.03) 3deg, rgba(255, 255, 255, 0.03) 4deg),
             repeating-conic-gradient(from 90deg at 50% 50%,
                 transparent 0deg, transparent 5deg,
-                rgba(255, 77, 77, 0.015) 5deg, rgba(255, 77, 77, 0.015) 6deg);
+                rgba(255, 255, 255, 0.02) 5deg, rgba(255, 255, 255, 0.02) 6deg);
         background-size: 100% 100%, 100% 100%, 120px 120px, 80px 80px;
         animation: topoDrift 30s linear infinite;
         pointer-events: none;
@@ -86,7 +85,6 @@
         -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
     }
 
-    /* дополнительный слой линий */
     &::after {
         content: '';
         position: absolute;
@@ -94,10 +92,10 @@
         background:
             repeating-linear-gradient(45deg,
                 transparent 0px, transparent 20px,
-                rgba(255, 77, 77, 0.02) 20px, rgba(255, 77, 77, 0.02) 21px),
+                rgba(255, 255, 255, 0.025) 20px, rgba(255, 255, 255, 0.025) 21px),
             repeating-linear-gradient(-45deg,
                 transparent 0px, transparent 30px,
-                rgba(255, 77, 77, 0.015) 30px, rgba(255, 77, 77, 0.015) 31px);
+                rgba(255, 255, 255, 0.02) 30px, rgba(255, 255, 255, 0.02) 31px);
         background-size: 60px 60px, 80px 80px;
         animation: topoDriftReverse 40s linear infinite;
         pointer-events: none;
@@ -133,7 +131,7 @@
     }
     & .hello__svg {
         fill: none;
-        stroke: #ff4d4d;
+        stroke: #ffffff;
         stroke-linecap: round;
         stroke-miterlimit: 10;
         stroke-width: 48px;
@@ -144,7 +142,7 @@
         opacity: 0.3;
         animation-fill-mode: forwards;
         will-change: stroke-dashoffset, opacity;
-        filter: drop-shadow(0 0 20px rgba(255, 77, 77, 0.3));
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.15));
         display: flex;
         justify-content: center;
         flex-direction: column;
@@ -153,7 +151,7 @@
     }
 }
 .loadingScreen .webName {
-    color: #fff;
+    color: #ffffff;
     font-size: 34px;
     font-family: "Kanit", sans-serif;
     font-weight: bold;
@@ -161,12 +159,12 @@
     opacity: 0;
     animation: fadeInUp 0.8s 0.1s ease forwards;
     will-change: transform, opacity;
-    text-shadow: 0 0 30px rgba(255, 77, 77, 0.3);
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
     z-index: 10;
     position: relative;
 }
 .loadingScreen .version {
-    color: rgba(255, 150, 150, 0.7);
+    color: #a0a0a0;
     font-size: 11px;
     margin-bottom: 10px;
     font-weight: 500;
