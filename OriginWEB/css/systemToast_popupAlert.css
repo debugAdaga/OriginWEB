@@ -113,7 +113,8 @@
     border-radius: 25px;
     font-size: 11px;
     z-index: 10012310;
-    backdrop-filter:blur(10px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     opacity: 0;
     pointer-events: none;
     font-family: "Noto sans", sans-serif;
