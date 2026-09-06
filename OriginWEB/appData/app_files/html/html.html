@@ -1,1 +1,112 @@
-<div>HELLO WORD</div>
+<!-- files-app.html -->
+<div class="app-container" id="filesApp" style="display: none;">
+    <div class="app-header">
+        <button class="app-back-btn" onclick="closeFilesApp()">←</button>
+        <h2>Файлы</h2>
+        <button class="app-menu-btn">⋮</button>
+    </div>
+    
+    <div class="files-toolbar">
+        <button class="toolbar-btn active" data-tab="recent">Недавние</button>
+        <button class="toolbar-btn" data-tab="categories">Категории</button>
+        <button class="toolbar-btn" data-tab="storage">Хранилище</button>
+    </div>
+    
+    <div class="files-content">
+        <!-- Вкладка "Недавние" -->
+        <div class="files-tab" id="recentTab">
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-info">
+                    <div class="file-name">Документ.txt</div>
+                    <div class="file-meta">12 КБ • Сегодня 14:30</div>
+                </div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">🖼️</div>
+                <div class="file-info">
+                    <div class="file-name">Фото_2026.jpg</div>
+                    <div class="file-meta">2.4 МБ • Вчера 10:15</div>
+                </div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">🎵</div>
+                <div class="file-info">
+                    <div class="file-name">Музыка.mp3</div>
+                    <div class="file-meta">5.1 МБ • 3 дня назад</div>
+                </div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📹</div>
+                <div class="file-info">
+                    <div class="file-name">Видео_2026.mp4</div>
+                    <div class="file-meta">24.8 МБ • 5 дней назад</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вкладка "Категории" -->
+        <div class="files-tab" id="categoriesTab" style="display: none;">
+            <div class="category-grid">
+                <div class="category-item">
+                    <div class="category-icon">📁</div>
+                    <div class="category-name">Документы</div>
+                    <div class="category-count">12 файлов</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">🖼️</div>
+                    <div class="category-name">Изображения</div>
+                    <div class="category-count">45 файлов</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">🎵</div>
+                    <div class="category-name">Аудио</div>
+                    <div class="category-count">8 файлов</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">📹</div>
+                    <div class="category-name">Видео</div>
+                    <div class="category-count">3 файла</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">📦</div>
+                    <div class="category-name">Архивы</div>
+                    <div class="category-count">6 файлов</div>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">💾</div>
+                    <div class="category-name">Прочее</div>
+                    <div class="category-count">15 файлов</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вкладка "Хранилище" -->
+        <div class="files-tab" id="storageTab" style="display: none;">
+            <div class="storage-info">
+                <div class="storage-total">
+                    <div class="storage-label">Всего места</div>
+                    <div class="storage-value">64 ГБ</div>
+                </div>
+                <div class="storage-bar">
+                    <div class="storage-progress" style="width: 45%;"></div>
+                </div>
+                <div class="storage-details">
+                    <div class="storage-detail-item">
+                        <span class="detail-label">Использовано</span>
+                        <span class="detail-value">28.8 ГБ</span>
+                    </div>
+                    <div class="storage-detail-item">
+                        <span class="detail-label">Свободно</span>
+                        <span class="detail-value">35.2 ГБ</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="storage-actions">
+                <button class="storage-btn" onclick="clearCache()">Очистить кэш</button>
+                <button class="storage-btn" onclick="showStorageInfo()">Подробнее</button>
+            </div>
+        </div>
+    </div>
+</div>
