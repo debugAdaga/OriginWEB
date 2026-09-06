@@ -117,7 +117,8 @@
 
     transition: all calc(0.15s * var(--bg-speedAnimation));
     background: #00000030;
-    /*backdrop-filter: blur(20px);*/
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     opacity: 1;
 }
 
@@ -130,7 +131,8 @@
     transform: scale(1.05263157895);
 
     background: #00000030;
-    /*backdrop-filter: blur(15px);*/
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     opacity: 1;
     animation: opacity0to1 calc(0.4s * var(--bg-speedAnimation)) ease;
 }
@@ -213,7 +215,8 @@
     transform: scale(1.05263157895);
 
     background: #00000030;
-    /*backdrop-filter: blur(15px);*/
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     opacity: 0;
 }
 #allAppIconScreen.scaleForEdit .iconApp {
