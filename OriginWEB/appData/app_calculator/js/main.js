@@ -80,13 +80,6 @@ function calculate_calc() {
   }
 }
 
-function closeCalculator() {
-  const container = document.querySelector('.calculator-container');
-  if (container) {
-    container.style.display = 'none';
-  }
-}
-
 document.addEventListener('keydown', function(e) {
   const key = e.key;
   
@@ -108,7 +101,8 @@ document.addEventListener('keydown', function(e) {
   } else if (key === 'Backspace') {
     backspace_calc();
   } else if (key === 'Escape') {
-    closeCalculator();
+    const container = document.querySelector('.calculator_calc');
+    if (container) container.style.display = 'none';
   } else if (key === 'c' || key === 'C') {
     clearDisplay_calc();
   }
