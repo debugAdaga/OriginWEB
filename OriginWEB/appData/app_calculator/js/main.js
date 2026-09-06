@@ -19,8 +19,17 @@ function append_calc(value) {
     } else {
       display_calc.innerText += ".";
     }
+  } else if (value === "%") {
+    try {
+      const num = parseFloat(current);
+      if (!isNaN(num)) {
+        display_calc.innerText = (num / 100).toString();
+      }
+    } catch {
+      display_calc.innerText = "Error";
+    }
   } else {
-    if (current === "0") {
+    if (current === "0" && value !== ".") {
       display_calc.innerText = value;
     } else {
       display_calc.innerText += value;
@@ -49,12 +58,58 @@ function calculate_calc() {
   else if (display_calc.innerText === "NaN") return;
 
   try {
-    const expression = display_calc.innerText
-      .replace(/:/g, "/")
-      .replace(/×/g, "*");
+    let expression = display_calc.innerText
+      .replace(/÷/g, "/")
+      .replace(/×/g, "*")
+      .replace(/−/g, "-");
 
-    display_calc.innerText = eval(expression);
+    const result = eval(expression);
+    
+    if (!isFinite(result)) {
+      display_calc.innerText = "Error";
+      return;
+    }
+    
+    if (Number.isInteger(result)) {
+      display_calc.innerText = result.toString();
+    } else {
+      display_calc.innerText = parseFloat(result.toFixed(10)).toString();
+    }
   } catch {
     display_calc.innerText = "Error";
   }
 }
+
+function closeCalculator() {
+  const container = document.querySelector('.calculator-container');
+  if (container) {
+    container.style.display = 'none';
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  const key = e.key;
+  
+  if (key >= '0' && key <= '9') {
+    append_calc(key);
+  } else if (key === '.') {
+    append_calc('.');
+  } else if (key === '+') {
+    append_calc('+');
+  } else if (key === '-') {
+    append_calc('-');
+  } else if (key === '*') {
+    append_calc('*');
+  } else if (key === '/') {
+    append_calc('/');
+  } else if (key === 'Enter' || key === '=') {
+    e.preventDefault();
+    calculate_calc();
+  } else if (key === 'Backspace') {
+    backspace_calc();
+  } else if (key === 'Escape') {
+    closeCalculator();
+  } else if (key === 'c' || key === 'C') {
+    clearDisplay_calc();
+  }
+});
