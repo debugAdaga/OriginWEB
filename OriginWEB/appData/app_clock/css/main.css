@@ -1,63 +1,461 @@
-.calculator_calc {
-  width: 320px;
-  padding: 20px;
-}
-.display_calc {
-  position: absolute;
-  top: 150px;
-  height: 90px;
-  width: 70%;
-  text-align: right;
-  padding: 15px;
-  font-size: 2rem;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  overflow-x: auto;
-  font-weight: 800;
-  font-family: "Lato", sans-serif;
-  color: white;
-}
-.buttons_calc {
-  position: absolute;
-  top: 280px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.buttons_calc_preview {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  scale: 0.4;
-  position: absolute;
-  top: 0px;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0a0a0a;
+    color: #ffffff;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.btn_calc {
-  border: none;
-  border-radius: 50%;
-  height: 60px;
-  width: 60px;
-  font-size: 1.4rem;
-  cursor: pointer;
-  background: #f3f3f3;
-  transition: background 0.2s;
-  font-weight: 800;
-  font-family: "Lato", sans-serif;
-  color: #353535;
+
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    max-height: 800px;
+    background: rgba(20, 20, 30, 0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
 }
-.btn_calc:hover {
-  background: #e0e0e0;
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 64px;
 }
-.orange_calc {
-  background: #fbc4ab;
-  color: #d84315;
+
+.app-back-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 10px;
+    transition: opacity 0.2s;
 }
-.equal_calc {
-  background: #f0625d;
-  color: white;
-  font-weight: bold;
+
+.app-back-btn:hover {
+    opacity: 0.7;
 }
-.gray_calc {
-  color: #d84315;
+
+.app-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.app-menu-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.clock-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.clock-tab {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    flex: 1;
+}
+
+.clock-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.clock-tab.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+.clock-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.clock-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.clock-tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.current-time-display {
+    text-align: center;
+    padding: 20px 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.current-time {
+    font-size: 64px;
+    font-weight: 300;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #00d4ff, #00ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.current-date {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 8px;
+}
+
+.alarm-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.alarm-section h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.alarm-inputs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.alarm-inputs input {
+    width: 50px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 20px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.alarm-inputs input:focus {
+    outline: none;
+    border-color: #00d4ff;
+}
+
+.alarm-inputs span {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.set-alarm-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #00d4ff, #00ff88);
+    border: none;
+    border-radius: 12px;
+    color: #000000;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.set-alarm-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+}
+
+.alarm-list {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.alarm-list h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.alarm-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: background 0.3s;
+}
+
+.alarm-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.alarm-item .alarm-time {
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+}
+
+.alarm-item .alarm-status {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: rgba(0, 212, 255, 0.2);
+    color: #00d4ff;
+}
+
+.alarm-item .alarm-status.active {
+    background: rgba(0, 255, 136, 0.2);
+    color: #00ff88;
+}
+
+.alarm-item .delete-alarm {
+    background: none;
+    border: none;
+    color: #ff4444;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#noAlarms {
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    padding: 20px;
+}
+
+.timer-display {
+    text-align: center;
+    font-size: 72px;
+    font-weight: 300;
+    font-family: 'Courier New', monospace;
+    padding: 30px 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.timer-display.warning {
+    color: #ff4444;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.timer-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.timer-btn {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.timer-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.timer-btn:active {
+    transform: scale(0.95);
+}
+
+.timer-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.preset-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.preset-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.stopwatch-display {
+    text-align: center;
+    font-size: 64px;
+    font-weight: 300;
+    font-family: 'Courier New', monospace;
+    padding: 30px 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.stopwatch-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.stopwatch-btn {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+    flex: 1;
+    min-width: 60px;
+}
+
+.stopwatch-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.stopwatch-btn:active {
+    transform: scale(0.95);
+}
+
+.lap-list {
+    max-height: 150px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 12px;
+}
+
+.lap-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.lap-item .lap-number {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+#noLaps {
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    padding: 10px;
+}
+
+.world-clock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.world-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    transition: background 0.3s;
+}
+
+.world-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.world-city {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.world-time {
+    font-size: 18px;
+    font-weight: 300;
+    font-family: 'Courier New', monospace;
+    color: #00d4ff;
+}
+
+@media (max-width: 600px) {
+    .app-container {
+        max-height: none;
+        border-radius: 0;
+    }
+    
+    .current-time {
+        font-size: 48px;
+    }
+    
+    .timer-display {
+        font-size: 48px;
+    }
+    
+    .stopwatch-display {
+        font-size: 48px;
+    }
+    
+    .clock-tab {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
 }
