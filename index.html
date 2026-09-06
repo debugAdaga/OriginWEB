@@ -44,6 +44,42 @@
 
         <link rel="stylesheet" href="/OriginWEB/root.css" />
         <link rel="stylesheet" href="/OriginWEB/body.css" />
+
+        <style>
+            #favApp {
+                border-radius: 32px !important;
+                background: rgba(255, 255, 255, 0.12) !important;
+                backdrop-filter: blur(24px) !important;
+                -webkit-backdrop-filter: blur(24px) !important;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+                padding: 6px 10px !important;
+                margin: 0 16px 8px 16px !important;
+                transition: all 0.2s ease !important;
+                border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                min-height: 70px !important;
+            }
+            #favApp .iconApp {
+                border-radius: 18px !important;
+                background-size: cover !important;
+                transition: transform 0.2s, box-shadow 0.2s !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            }
+            #favApp .iconApp:hover {
+                transform: scale(1.04) !important;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+            }
+            #favApp .iconApp label {
+                font-weight: 400 !important;
+                font-size: 11px !important;
+                text-shadow: 0 1px 4px rgba(0,0,0,0.2) !important;
+            }
+            #favApp {
+                margin-bottom: 12px !important;
+            }
+            .liquid.noActiveAnim {
+                transition: all 0.2s ease !important;
+            }
+        </style>
     </head>
 
     <body>
@@ -98,7 +134,7 @@
                     <div class="liquid settingsBtn">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
                             <path
-                                d="m332-34-19-141q-3-2-6.5-4t-6.5-4l-133 56L19-388l112-85q0-2 .5-4t.5-4q0-2-.5-3.5t-.5-3.5L19-573l148-258 133 54q4-1 7.5-3t6.5-4l18-143h296l18 143 8 4 8 4 131-55 148 258-114 85v8q0 2-.5 4t-.5 4l114 84-150 261-132-56q-3 1-6 3.5t-5 3.5L628-34H332Zm146-296q63 0 107-44t44-107q0-62-44-106.5T478-632q-63 0-107 44.5T327-481q0 63 44 107t107 44Z"
+                                d="m332-34-19-141q-3-2-6.5-4t-6.5-4l-133 56L19-388l112-85q0-2 .5-4t.5-4q0-2-.5-3.5t-.5-3.5L19-573l148-258 133 54q4-1 7.5-3t6.5-4l18-143h296l18 143 8 4 8 4 131-55 148 258-114 85v8q0 2-.5 4t-.5 4l114 84-150 261-132-56q-3 1-6 3.5t-5 3.5L628-34H332Zm146-296q63 0 107-44t44-106.5q0-62.5-44-107T478-632q-63 0-107 44.5t-44 107q0 62.5 44 106.5t107 44Z"
                             />
                         </svg>
                     </div>
@@ -861,7 +897,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!--app of appThem-->
                             <div class="appInApp" id="app_SettingsAppAOD">
                                 <div class="backBtnForAppInApp">Always on display</div>
                                 <div class="scrollYSettings">
@@ -1229,8 +1264,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!--end of appTheme-->
                         </div>
 
                         <div class="appInApp" id="app_SettingsAppDisplayAndBrightness">
@@ -1842,8 +1875,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!--end of appDisplay-->
                     </div>
                 </div>
                 <div class="app" id="app_gallery">
@@ -1963,9 +1994,7 @@
                 </div>
             </div>
 
-            <!--on top element-->
             <div id="lockScreen">
-                <!--lock screen ==> -->
                 <div class="wallpaper" id="wallpaperLock"><div id="imageForWallpaperLock"></div></div>
 
                 <div id="scaleForOff">
@@ -2005,7 +2034,6 @@
 
                 <div class="fingerBtn displayN" id="fingerBtn"></div>
             </div>
-            <!-- <== lock screen-->
 
             <div class="sys controlCenter OriginOS">
                 <link rel="stylesheet" href="/OriginWEB/css/controlsCenter.css" />
@@ -2552,7 +2580,6 @@
                     </div>
                 </div>
             </div>
-            <!-- <== id="statusBar"-->
 
             <div class="passwordScreen lightMode" id="passwordScreen">
                 <link rel="stylesheet" href="/OriginWEB/css/passwordScreen.css" />
@@ -2748,7 +2775,6 @@
         <script src="/OriginWEB/otherJS/notif.js"></script>
         <script src="/OriginWEB/animationLockUnlock/lock.js"></script>
 
-        <!--other js-->
         <script src="/OriginWEB/otherJS/timeAndDate.js"></script>
         <script src="/OriginWEB/otherJS/systemToast_popupAlert.js"></script>
         <script src="/OriginWEB/otherJS/colorFunction.js"></script>
