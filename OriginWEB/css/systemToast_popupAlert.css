@@ -110,9 +110,10 @@
     transform: translateY(-80px) scale(0.8);
     color: var(--bg-color);
     padding: 12px;
-    border-radius: 13px;
+    border-radius: 25px;
     font-size: 11px;
     z-index: 10012310;
+    backdrop-filter:blur(10px);
     opacity: 0;
     pointer-events: none;
     font-family: "Noto sans", sans-serif;
