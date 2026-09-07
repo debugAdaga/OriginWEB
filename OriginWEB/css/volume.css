@@ -40,10 +40,10 @@
         translate: 0 -50%;
         scale: 1;
         pointer-events: all;
-        /*.volumeMain,
+        .volumeMain,
         .RingMode {
              box-shadow: 0 0 15px #00000080;
-        }*/
+        }
     }
     &.small {
         .volumeMain,
