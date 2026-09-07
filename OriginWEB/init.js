@@ -662,12 +662,29 @@ await updateAppPositions(async () => {
             fill: "forwards",
         }).onfinish = async () => {
             loadingScreen.remove();
+
+            const isFirstTimeOpen = localStorage.getItem("version") == null;
+
+            if (isFirstTimeOpen) {
+                const setUpScreen = document.querySelector(".setUpScreen");
+                setUpScreen.style.display = "flex";
+
+                const goToOriginWEBBtn = document.getElementById("goToOriginWEBBtn");
+                goToOriginWEBBtn.addEventListener("click", () => {
+                    setUpScreen.animate([{opacity: 1}, {opacity: 0}], {
+                        duration: 800,
+                        easing: "ease",
+                        fill: "forwards",
+                    }).onfinish = () => {
+                        setUpScreen.remove();
+                        unlockAnimWA();
+                    };
+                });
+            } else {
+                unlockAnimWA();
+            }
         };
     }, 1500);
-
-    setTimeout(() => {
-        unlockAnimWA();
-    }, 100);
 });
 
 {
