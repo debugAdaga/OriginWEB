@@ -44,7 +44,9 @@ function showOriginAI() {
     originAIActive = true;
 
     const aiEl = document.querySelector(".ai");
-    if (aiEl) aiEl.style.display = "block";
+    const backdrop = document.getElementById("originAIBackdrop");
+    if (aiEl) aiEl.classList.add("show_alert");
+    if (backdrop) backdrop.classList.add("show_alert");
 
     const input = document.getElementById("originAIInput");
     if (input) {
@@ -57,10 +59,13 @@ function showOriginAI() {
 }
 
 function hideOriginAI() {
+    if (!originAIActive) return;
     originAIActive = false;
 
     const aiEl = document.querySelector(".ai");
-    if (aiEl) aiEl.style.display = "none";
+    const backdrop = document.getElementById("originAIBackdrop");
+    if (aiEl) aiEl.classList.remove("show_alert");
+    if (backdrop) backdrop.classList.remove("show_alert");
 }
 
 function initOriginAIInput() {
@@ -76,9 +81,14 @@ function initOriginAIInput() {
         sendToOriginAI(userText);
     });
 
-    const closeBtn = document.getElementById("originAIClose");
-    if (closeBtn) {
-        closeBtn.addEventListener("click", hideOriginAI);
+    const backdrop = document.getElementById("originAIBackdrop");
+    const panel = document.getElementById("originAIPanel");
+    if (backdrop && panel) {
+        backdrop.addEventListener("click", (e) => {
+            if (!panel.contains(e.target)) {
+                hideOriginAI();
+            }
+        });
     }
 }
 
