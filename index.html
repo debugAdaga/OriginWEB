@@ -3010,18 +3010,19 @@
                 <div class="camera"></div>
             </island>
 
-            <div class="ai" style="display: none">
+            <div class="ai">
                 <div class="ai-box"></div>
-                <div class="ai-panel">
-                    <div class="ai-header">
-                        <span>OriginAI</span>
-                        <button type="button" id="originAIClose">✕</button>
+                <div class="ai-backdrop" id="originAIBackdrop">
+                    <div class="ai-panel" id="originAIPanel">
+                        <div class="ai-header">
+                            <span>OriginAI</span>
+                        </div>
+                        <div id="originAIResponse" class="ai-response"></div>
+                        <form id="originAIForm">
+                            <input type="text" id="originAIInput" placeholder="Ask OriginAI..." autocomplete="off" />
+                            <button type="submit">Send</button>
+                        </form>
                     </div>
-                    <div id="originAIResponse" class="ai-response"></div>
-                    <form id="originAIForm">
-                        <input type="text" id="originAIInput" placeholder="Ask OriginAI..." autocomplete="off" />
-                        <button type="submit">Send</button>
-                    </form>
                 </div>
                 <link rel="stylesheet" href="/OriginWEB/css/AI.css" />
                 <script src="/OriginWEB/otherJS/originAI.js"></script>
