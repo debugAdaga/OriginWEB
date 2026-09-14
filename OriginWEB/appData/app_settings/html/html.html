@@ -940,7 +940,15 @@
                 </svg>
             </div>
 
-            <div class="settingsItem brTop brBottom" data-openAppId="app_SettingsAppPasswordAndSecurity">
+            <div class="settingsItem brTop" data-openAppId="app_SettingsAppFontsAndLanguages">
+                <div class="settingsText magrinL5">Fonts & languages</div>
+
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                    <path d="M320-39 210-148l332-332-332-332 110-110 441 442L320-39Z" />
+                </svg>
+            </div>
+
+            <div class="settingsItem brBottom" data-openAppId="app_SettingsAppPasswordAndSecurity">
                 <div class="settingsText magrinL5">Password and security</div>
 
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
@@ -1187,6 +1195,47 @@
                                     Click
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="appInApp" id="app_SettingsAppFontsAndLanguages">
+        <div class="backBtnForAppInApp">Fonts & languages</div>
+        <div class="scrollYSettings">
+            <div class="scrollContent">
+                <div class="settingsItem brTop">
+                    <div class="settingsText marginLeft">System font</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                        <path d="M320-39 210-148l332-332-332-332 110-110 441 442L320-39Z" />
+                    </svg>
+                </div>
+
+                <div class="settingsItem brBottom noActiveAnim">
+                    <div class="sortByY">
+                        <div class="settingsText marginLeft">Font size</div>
+                        <input type="range" max="20" min="-5" value="0" step="1" id="inputRangeFontSize" />
+                        <div class="centerInline">
+                            <div class="fontPreview notoSans padding5_9" style="font-size: 16px">Aa</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settingsItem brTop brBottom">
+                    <div class="settingsText marginLeft">Language</div>
+                    <div class="select left" name="systemLanguage">
+                        <div class="selectTrigger">
+                            <span class="currentValue">English</span>
+                        </div>
+
+                        <div class="selectBoxs">
+                            <div class="itemChild active" data-value="en">English</div>
+                            <div class="itemChild" data-value="vi">Tiếng Việt</div>
+                            <div class="itemChild" data-value="zh">中文</div>
+                            <div class="itemChild" data-value="es">Español</div>
+                            <div class="itemChild" data-value="fr">Français</div>
                         </div>
                     </div>
                 </div>
