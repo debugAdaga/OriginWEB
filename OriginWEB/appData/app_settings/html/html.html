@@ -1203,22 +1203,79 @@
     </div>
 
     <div class="appInApp" id="app_SettingsAppFontsAndLanguages">
+        <link rel="stylesheet" href="/OriginWEB/appData/app_settings/css/app_SettingsAppFontsAndLanguages.css" />
         <div class="backBtnForAppInApp">Fonts & languages</div>
         <div class="scrollYSettings">
             <div class="scrollContent">
                 <div class="settingsItem brTop">
                     <div class="settingsText marginLeft">System font</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
-                        <path d="M320-39 210-148l332-332-332-332 110-110 441 442L320-39Z" />
-                    </svg>
+                </div>
+                
+                <div class="fontListContainer">
+                    <div class="fontOption" data-font="'Noto Sans', sans-serif">
+                        <div class="fontPreviewText" style="font-family: 'Noto Sans', sans-serif">
+                            <span class="fontExample">AaBbCc</span>
+                            <span class="fontName">Noto Sans</span>
+                        </div>
+                        <div class="radioCircle"></div>
+                    </div>
+                    <div class="fontOption" data-font="'Noto Serif', serif">
+                        <div class="fontPreviewText" style="font-family: 'Noto Serif', serif">
+                            <span class="fontExample">AaBbCc</span>
+                            <span class="fontName">Noto Serif</span>
+                        </div>
+                        <div class="radioCircle"></div>
+                    </div>
+                    <div class="fontOption" data-font="'Roboto', sans-serif">
+                        <div class="fontPreviewText" style="font-family: 'Roboto', sans-serif">
+                            <span class="fontExample">AaBbCc</span>
+                            <span class="fontName">Roboto</span>
+                        </div>
+                        <div class="radioCircle"></div>
+                    </div>
+                    <div class="fontOption" data-font="'Open Sans', sans-serif">
+                        <div class="fontPreviewText" style="font-family: 'Open Sans', sans-serif">
+                            <span class="fontExample">AaBbCc</span>
+                            <span class="fontName">Open Sans</span>
+                        </div>
+                        <div class="radioCircle"></div>
+                    </div>
+                    <div class="fontOption" data-font="'Montserrat', sans-serif">
+                        <div class="fontPreviewText" style="font-family: 'Montserrat', sans-serif">
+                            <span class="fontExample">AaBbCc</span>
+                            <span class="fontName">Montserrat</span>
+                        </div>
+                        <div class="radioCircle"></div>
+                    </div>
+                    <div class="fontOption" data-font="'Playfair Display', serif">
+                        <div class="fontPreviewText" style="font-family: 'Playfair Display', serif">
+                            <span class="fontExample">AaBbCc</span>
+                            <span class="fontName">Playfair Display</span>
+                        </div>
+                        <div class="radioCircle"></div>
+                    </div>
                 </div>
 
-                <div class="settingsItem brBottom noActiveAnim">
+                <div class="settingsItem brTop brBottom noActiveAnim">
                     <div class="sortByY">
                         <div class="settingsText marginLeft">Font size</div>
-                        <input type="range" max="20" min="-5" value="0" step="1" id="inputRangeFontSize" />
-                        <div class="centerInline">
-                            <div class="fontPreview notoSans padding5_9" style="font-size: 16px">Aa</div>
+                    </div>
+                    <div class="fontSizeCards">
+                        <div class="sizeCard" data-size="-2">
+                            <span class="sizeLabel">S</span>
+                            <span class="sizePreview" style="font-size: 12px">Aa</span>
+                        </div>
+                        <div class="sizeCard active" data-size="0">
+                            <span class="sizeLabel">M</span>
+                            <span class="sizePreview" style="font-size: 16px">Aa</span>
+                        </div>
+                        <div class="sizeCard" data-size="3">
+                            <span class="sizeLabel">L</span>
+                            <span class="sizePreview" style="font-size: 20px">Aa</span>
+                        </div>
+                        <div class="sizeCard" data-size="6">
+                            <span class="sizeLabel">XL</span>
+                            <span class="sizePreview" style="font-size: 24px">Aa</span>
                         </div>
                     </div>
                 </div>
@@ -1236,6 +1293,12 @@
                             <div class="itemChild" data-value="zh">中文</div>
                             <div class="itemChild" data-value="es">Español</div>
                             <div class="itemChild" data-value="fr">Français</div>
+                            <div class="itemChild" data-value="de">Deutsch</div>
+                            <div class="itemChild" data-value="it">Italiano</div>
+                            <div class="itemChild" data-value="pt">Português</div>
+                            <div class="itemChild" data-value="ru">Русский</div>
+                            <div class="itemChild" data-value="ja">日本語</div>
+                            <div class="itemChild" data-value="ko">한국어</div>
                         </div>
                     </div>
                 </div>

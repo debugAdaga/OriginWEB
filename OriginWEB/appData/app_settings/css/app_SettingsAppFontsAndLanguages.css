@@ -2,7 +2,133 @@
     width: 200px;
 }
 
-#app_SettingsAppFontsAndLanguages input[type="range"] {
-    width: calc(100% - 40px);
-    margin-left: 20px;
+.fontListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 20px;
+}
+
+.fontOption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--bg-colorSettingsItem, #f5f5f5);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fontOption:hover {
+    background: var(--bg-colorSettingsItemHover, #e8e8e8);
+}
+
+.fontOption.active {
+    background: var(--bg-primaryColor, #007aff);
+}
+
+.fontOption.active .fontPreviewText {
+    color: white;
+}
+
+.fontOption.active .radioCircle {
+    border-color: white;
+    background: white;
+}
+
+.fontOption.active .radioCircle::after {
+    opacity: 1;
+}
+
+.fontPreviewText {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fontExample {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.fontName {
+    font-size: 14px;
+    opacity: 0.7;
+    font-weight: 400;
+}
+
+.radioCircle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.radioCircle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bg-primaryColor, #007aff);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.fontOption.active .radioCircle::after {
+    opacity: 1;
+}
+
+.fontSizeCards {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px;
+    justify-content: center;
+}
+
+.sizeCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background: var(--bg-colorSettingsItem, #f5f5f5);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 60px;
+}
+
+.sizeCard:hover {
+    background: var(--bg-colorSettingsItemHover, #e8e8e8);
+    transform: translateY(-2px);
+}
+
+.sizeCard.active {
+    background: var(--bg-primaryColor, #007aff);
+    color: white;
+}
+
+.sizeCard.active .sizePreview {
+    color: white;
+}
+
+.sizeLabel {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sizePreview {
+    font-weight: 600;
+    line-height: 1;
 }
