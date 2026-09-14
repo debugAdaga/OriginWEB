@@ -494,6 +494,77 @@ const functionWhenOpenAppInApp_settings = {
             el.addEventListener("click", el._inpurtHandler);
         }
     },
+    app_SettingsAppFontsAndLanguages: function () {
+        {
+            // Font size slider
+            const elSlider = document.getElementById("inputRangeFontSize");
+            const fontPreview = document.querySelector(".fontPreview");
+            elSlider._fontSizeHandler = (e) => {
+                const fontSizeDelta = parseInt(e.target.value);
+                const baseFontSize = 16;
+                const newFontSize = baseFontSize + fontSizeDelta;
+                fontPreview.style.fontSize = `${newFontSize}px`;
+                document.documentElement.style.setProperty("--bg-fontSizeDelta", `${fontSizeDelta}px`);
+                localStorage.setItem("fontSizeDelta", `${fontSizeDelta}`);
+                
+                // Apply font size to phone
+                phone.style.fontSize = `${newFontSize}px`;
+            };
+            elSlider.addEventListener("input", elSlider._fontSizeHandler);
+            
+            // Load saved font size
+            const savedFontSize = localStorage.getItem("fontSizeDelta");
+            if (savedFontSize) {
+                elSlider.value = savedFontSize;
+                const newFontSize = 16 + parseInt(savedFontSize);
+                fontPreview.style.fontSize = `${newFontSize}px`;
+                phone.style.fontSize = `${newFontSize}px`;
+            }
+        }
+        
+        {
+            // Language selector
+            const selectLang = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='systemLanguage']");
+            const selectBoxs = selectLang.querySelector(".selectBoxs");
+            const currentValue = selectLang.querySelector(".currentValue");
+            
+            selectLang._langHandler = (e) => {
+                if (e.target.matches(".selectTrigger")) {
+                    selectBoxs.classList.toggle("open");
+                }
+            };
+            selectLang.addEventListener("click", selectLang._langHandler);
+            
+            selectBoxs._langSelectHandler = (e) => {
+                const langValue = e.target.dataset.value;
+                const langText = e.target.textContent;
+                
+                currentValue.textContent = langText;
+                localStorage.setItem("systemLanguage", langValue);
+                
+                selectBoxs.querySelectorAll(".itemChild").forEach((i) => i.classList.remove("active"));
+                e.target.classList.add("active");
+                
+                setTimeout(() => {
+                    selectBoxs.classList.remove("open");
+                }, 200);
+            };
+            selectBoxs.querySelectorAll(".itemChild").forEach((item) => {
+                item.addEventListener("click", selectBoxs._langSelectHandler);
+            });
+            
+            // Load saved language
+            const savedLang = localStorage.getItem("systemLanguage");
+            if (savedLang) {
+                const activeItem = selectBoxs.querySelector(`.itemChild[data-value='${savedLang}']`);
+                if (activeItem) {
+                    currentValue.textContent = activeItem.textContent;
+                    selectBoxs.querySelectorAll(".itemChild").forEach((i) => i.classList.remove("active"));
+                    activeItem.classList.add("active");
+                }
+            }
+        }
+    },
     app_SettingsAppActionBtn: function () {
         document.getElementById("app_SettingsAppActionBtn").classList.add("animate");
         cameraBtn.classList.add("animate");
@@ -1031,6 +1102,24 @@ const functionWhenCloseAppInApp_settings = {
             const el = document.getElementById("inputRangeIconBRadius");
             el.removeEventListener("pointerup", el.handler);
             delete el.handler;
+        }
+    },
+    app_SettingsAppFontsAndLanguages: function () {
+        {
+            const elSlider = document.getElementById("inputRangeFontSize");
+            elSlider.removeEventListener("input", elSlider._fontSizeHandler);
+            delete elSlider._fontSizeHandler;
+        }
+        {
+            const selectLang = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='systemLanguage']");
+            selectLang.removeEventListener("click", selectLang._langHandler);
+            delete selectLang._langHandler;
+            
+            const selectBoxs = selectLang.querySelector(".selectBoxs");
+            selectBoxs.querySelectorAll(".itemChild").forEach((item) => {
+                item.removeEventListener("click", selectBoxs._langSelectHandler);
+            });
+            delete selectBoxs._langSelectHandler;
         }
     },
     app_SettingsAppLiquidGlass: function () {
