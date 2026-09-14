@@ -495,38 +495,73 @@ const functionWhenOpenAppInApp_settings = {
         }
     },
     app_SettingsAppFontsAndLanguages: function () {
-        {
-            // Font size slider
-            const elSlider = document.getElementById("inputRangeFontSize");
-            const fontPreview = document.querySelector(".fontPreview");
-            elSlider._fontSizeHandler = (e) => {
-                const fontSizeDelta = parseInt(e.target.value);
-                const baseFontSize = 16;
-                const newFontSize = baseFontSize + fontSizeDelta;
-                fontPreview.style.fontSize = `${newFontSize}px`;
-                document.documentElement.style.setProperty("--bg-fontSizeDelta", `${fontSizeDelta}px`);
-                localStorage.setItem("fontSizeDelta", `${fontSizeDelta}`);
-                
-                // Apply font size to phone
-                phone.style.fontSize = `${newFontSize}px`;
-            };
-            elSlider.addEventListener("input", elSlider._fontSizeHandler);
-            
-            // Load saved font size
-            const savedFontSize = localStorage.getItem("fontSizeDelta");
-            if (savedFontSize) {
-                elSlider.value = savedFontSize;
-                const newFontSize = 16 + parseInt(savedFontSize);
-                fontPreview.style.fontSize = `${newFontSize}px`;
-                phone.style.fontSize = `${newFontSize}px`;
-            }
-        }
+        // Font family selection
+        const fontOptions = document.querySelectorAll("#app_SettingsAppFontsAndLanguages .fontOption");
+        const savedFont = localStorage.getItem("systemFont") || "'Noto Sans', sans-serif";
         
-        {
-            // Language selector
-            const selectLang = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='systemLanguage']");
+        fontOptions.forEach(option => {
+            if (option.dataset.font === savedFont) {
+                option.classList.add("active");
+            }
+            
+            option._fontHandler = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                fontOptions.forEach(opt => opt.classList.remove("active"));
+                this.classList.add("active");
+                
+                const font = this.dataset.font;
+                document.documentElement.style.setProperty("--bg-fontFamily", font);
+                phone.style.fontFamily = font;
+                localStorage.setItem("systemFont", font);
+            };
+            option.addEventListener("click", option._fontHandler);
+        });
+        
+        // Font size cards
+        const sizeCards = document.querySelectorAll("#app_SettingsAppFontsAndLanguages .sizeCard");
+        const savedSize = localStorage.getItem("fontSizeDelta") || "0";
+        
+        sizeCards.forEach(card => {
+            if (card.dataset.size === savedSize) {
+                card.classList.add("active");
+            }
+            
+            card._sizeHandler = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                sizeCards.forEach(c => c.classList.remove("active"));
+                this.classList.add("active");
+                
+                const sizeDelta = parseInt(this.dataset.size);
+                const baseFontSize = 16;
+                const newFontSize = baseFontSize + sizeDelta;
+                
+                document.documentElement.style.setProperty("--bg-fontSizeDelta", `${sizeDelta}px`);
+                phone.style.fontSize = `${newFontSize}px`;
+                localStorage.setItem("fontSizeDelta", `${sizeDelta}`);
+            };
+            card.addEventListener("click", card._sizeHandler);
+        });
+        
+        // Language selector
+        const selectLang = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='systemLanguage']");
+        if (selectLang) {
             const selectBoxs = selectLang.querySelector(".selectBoxs");
             const currentValue = selectLang.querySelector(".currentValue");
+            
+            // Load saved language
+            const savedLang = localStorage.getItem("systemLanguage");
+            if (savedLang) {
+                const activeItem = selectBoxs.querySelector(`.itemChild[data-value='${savedLang}']`);
+                if (activeItem) {
+                    currentValue.textContent = activeItem.textContent;
+                    selectBoxs.querySelectorAll(".itemChild").forEach(i => i.classList.remove("active"));
+                    activeItem.classList.add("active");
+                }
+            }
             
             selectLang._langHandler = (e) => {
                 if (e.target.matches(".selectTrigger")) {
@@ -552,17 +587,6 @@ const functionWhenOpenAppInApp_settings = {
             selectBoxs.querySelectorAll(".itemChild").forEach((item) => {
                 item.addEventListener("click", selectBoxs._langSelectHandler);
             });
-            
-            // Load saved language
-            const savedLang = localStorage.getItem("systemLanguage");
-            if (savedLang) {
-                const activeItem = selectBoxs.querySelector(`.itemChild[data-value='${savedLang}']`);
-                if (activeItem) {
-                    currentValue.textContent = activeItem.textContent;
-                    selectBoxs.querySelectorAll(".itemChild").forEach((i) => i.classList.remove("active"));
-                    activeItem.classList.add("active");
-                }
-            }
         }
     },
     app_SettingsAppActionBtn: function () {
@@ -1385,75 +1409,134 @@ function setWallpaperOption(bgImg) {
 
 // Fonts & Languages functions
 const functionWhenOpenAppInApp_settings_app_SettingsAppFontsAndLanguages = function () {
-    // Font family select
-    const fontSelect = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='fontFamily']");
-    if (fontSelect) {
-        const currentValue = localStorage.getItem("fontFamily") || "Roboto Flex";
-        fontSelect.querySelector(".currentValue").textContent = currentValue;
+    // Font family selection
+    const fontOptions = document.querySelectorAll("#app_SettingsAppFontsAndLanguages .fontOption");
+    const savedFont = localStorage.getItem("systemFont") || "'Noto Sans', sans-serif";
+    
+    fontOptions.forEach(option => {
+        if (option.dataset.font === savedFont) {
+            option.classList.add("active");
+        }
         
-        fontSelect._fontHandler = function(e) {
-            if (e.target.classList.contains("itemChild")) {
-                const value = e.target.dataset.value;
-                fontSelect.querySelector(".currentValue").textContent = value;
-                document.body.style.fontFamily = value;
-                localStorage.setItem("fontFamily", value);
+        option._fontHandler = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            fontOptions.forEach(opt => opt.classList.remove("active"));
+            this.classList.add("active");
+            
+            const font = this.dataset.font;
+            document.documentElement.style.setProperty("--bg-fontFamily", font);
+            phone.style.fontFamily = font;
+            localStorage.setItem("systemFont", font);
+        };
+        option.addEventListener("click", option._fontHandler);
+    });
+    
+    // Font size cards
+    const sizeCards = document.querySelectorAll("#app_SettingsAppFontsAndLanguages .sizeCard");
+    const savedSize = localStorage.getItem("fontSizeDelta") || "0";
+    
+    sizeCards.forEach(card => {
+        if (card.dataset.size === savedSize) {
+            card.classList.add("active");
+        }
+        
+        card._sizeHandler = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            sizeCards.forEach(c => c.classList.remove("active"));
+            this.classList.add("active");
+            
+            const sizeDelta = parseInt(this.dataset.size);
+            const baseFontSize = 16;
+            const newFontSize = baseFontSize + sizeDelta;
+            
+            document.documentElement.style.setProperty("--bg-fontSizeDelta", `${sizeDelta}px`);
+            phone.style.fontSize = `${newFontSize}px`;
+            localStorage.setItem("fontSizeDelta", `${sizeDelta}`);
+        };
+        card.addEventListener("click", card._sizeHandler);
+    });
+    
+    // Language selector
+    const selectLang = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='systemLanguage']");
+    if (selectLang) {
+        const selectBoxs = selectLang.querySelector(".selectBoxs");
+        const currentValue = selectLang.querySelector(".currentValue");
+        
+        // Load saved language
+        const savedLang = localStorage.getItem("systemLanguage");
+        if (savedLang) {
+            const activeItem = selectBoxs.querySelector(`.itemChild[data-value='${savedLang}']`);
+            if (activeItem) {
+                currentValue.textContent = activeItem.textContent;
+                selectBoxs.querySelectorAll(".itemChild").forEach(i => i.classList.remove("active"));
+                activeItem.classList.add("active");
+            }
+        }
+        
+        selectLang._langHandler = (e) => {
+            if (e.target.matches(".selectTrigger")) {
+                selectBoxs.classList.toggle("open");
             }
         };
-        fontSelect.addEventListener("click", fontSelect._fontHandler);
-    }
-    
-    // Font size range
-    const fontSizeRange = document.getElementById("inputRangeFontSize");
-    if (fontSizeRange) {
-        const savedSize = localStorage.getItem("fontSize") || "16";
-        fontSizeRange.value = savedSize;
-        document.body.style.fontSize = savedSize + "px";
+        selectLang.addEventListener("click", selectLang._langHandler);
         
-        fontSizeRange._sizeHandler = function(e) {
-            const value = e.currentTarget.value;
-            document.body.style.fontSize = value + "px";
-            localStorage.setItem("fontSize", value);
+        selectBoxs._langSelectHandler = (e) => {
+            const langValue = e.target.dataset.value;
+            const langText = e.target.textContent;
+            
+            currentValue.textContent = langText;
+            localStorage.setItem("systemLanguage", langValue);
+            
+            selectBoxs.querySelectorAll(".itemChild").forEach((i) => i.classList.remove("active"));
+            e.target.classList.add("active");
+            
+            setTimeout(() => {
+                selectBoxs.classList.remove("open");
+            }, 200);
         };
-        fontSizeRange.addEventListener("input", fontSizeRange._sizeHandler);
-    }
-    
-    // Language select
-    const langSelect = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='language']");
-    if (langSelect) {
-        const currentLang = localStorage.getItem("language") || "en";
-        const langNames = {en: "English", ru: "Русский", zh: "中文", es: "Español"};
-        langSelect.querySelector(".currentValue").textContent = langNames[currentLang] || "English";
-        
-        langSelect._langHandler = function(e) {
-            if (e.target.classList.contains("itemChild")) {
-                const value = e.target.dataset.value;
-                langSelect.querySelector(".currentValue").textContent = langNames[value] || "English";
-                localStorage.setItem("language", value);
-                // Здесь можно добавить логику смены языка интерфейса
-                console.log("Language changed to:", value);
-            }
-        };
-        langSelect.addEventListener("click", langSelect._langHandler);
+        selectBoxs.querySelectorAll(".itemChild").forEach((item) => {
+            item.addEventListener("click", selectBoxs._langSelectHandler);
+        });
     }
 };
 
 const functionWhenCloseAppInApp_settings_app_SettingsAppFontsAndLanguages = function () {
-    const fontSelect = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='fontFamily']");
-    if (fontSelect && fontSelect._fontHandler) {
-        fontSelect.removeEventListener("click", fontSelect._fontHandler);
-        delete fontSelect._fontHandler;
-    }
+    // Remove font option handlers
+    const fontOptions = document.querySelectorAll("#app_SettingsAppFontsAndLanguages .fontOption");
+    fontOptions.forEach(option => {
+        if (option._fontHandler) {
+            option.removeEventListener("click", option._fontHandler);
+            delete option._fontHandler;
+        }
+    });
     
-    const fontSizeRange = document.getElementById("inputRangeFontSize");
-    if (fontSizeRange && fontSizeRange._sizeHandler) {
-        fontSizeRange.removeEventListener("input", fontSizeRange._sizeHandler);
-        delete fontSizeRange._sizeHandler;
-    }
+    // Remove size card handlers
+    const sizeCards = document.querySelectorAll("#app_SettingsAppFontsAndLanguages .sizeCard");
+    sizeCards.forEach(card => {
+        if (card._sizeHandler) {
+            card.removeEventListener("click", card._sizeHandler);
+            delete card._sizeHandler;
+        }
+    });
     
-    const langSelect = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='language']");
-    if (langSelect && langSelect._langHandler) {
-        langSelect.removeEventListener("click", langSelect._langHandler);
-        delete langSelect._langHandler;
+    // Remove language selector handlers
+    const selectLang = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='systemLanguage']");
+    if (selectLang) {
+        if (selectLang._langHandler) {
+            selectLang.removeEventListener("click", selectLang._langHandler);
+            delete selectLang._langHandler;
+        }
+        const selectBoxs = selectLang.querySelector(".selectBoxs");
+        if (selectBoxs && selectBoxs._langSelectHandler) {
+            selectBoxs.querySelectorAll(".itemChild").forEach(item => {
+                item.removeEventListener("click", selectBoxs._langSelectHandler);
+            });
+            delete selectBoxs._langSelectHandler;
+        }
     }
 };
 

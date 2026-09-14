@@ -185,6 +185,7 @@ frame.classList.add(`${deviceType}Mode`);
 // load clock app
 await loadHTMLInto("#app_clock .appDisplay", "/OriginWEB/appData/app_clock/html/html.html");
 await loadHTMLInto("#app_calculator .appDisplay", "/OriginWEB/appData/app_calculator/html/html.html");
+await loadHTMLInto("#app_settings .appDisplay", "/OriginWEB/appData/app_settings/html/html.html");
 
 await loadAppLayout();
 await cleanupEmptyScreens();
