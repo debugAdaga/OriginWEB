@@ -1382,3 +1382,81 @@ function setWallpaperOption(bgImg) {
         overlay.classList.remove("openForWallpaper");
     };
 }
+
+// Fonts & Languages functions
+const functionWhenOpenAppInApp_settings_app_SettingsAppFontsAndLanguages = function () {
+    // Font family select
+    const fontSelect = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='fontFamily']");
+    if (fontSelect) {
+        const currentValue = localStorage.getItem("fontFamily") || "Roboto Flex";
+        fontSelect.querySelector(".currentValue").textContent = currentValue;
+        
+        fontSelect._fontHandler = function(e) {
+            if (e.target.classList.contains("itemChild")) {
+                const value = e.target.dataset.value;
+                fontSelect.querySelector(".currentValue").textContent = value;
+                document.body.style.fontFamily = value;
+                localStorage.setItem("fontFamily", value);
+            }
+        };
+        fontSelect.addEventListener("click", fontSelect._fontHandler);
+    }
+    
+    // Font size range
+    const fontSizeRange = document.getElementById("inputRangeFontSize");
+    if (fontSizeRange) {
+        const savedSize = localStorage.getItem("fontSize") || "16";
+        fontSizeRange.value = savedSize;
+        document.body.style.fontSize = savedSize + "px";
+        
+        fontSizeRange._sizeHandler = function(e) {
+            const value = e.currentTarget.value;
+            document.body.style.fontSize = value + "px";
+            localStorage.setItem("fontSize", value);
+        };
+        fontSizeRange.addEventListener("input", fontSizeRange._sizeHandler);
+    }
+    
+    // Language select
+    const langSelect = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='language']");
+    if (langSelect) {
+        const currentLang = localStorage.getItem("language") || "en";
+        const langNames = {en: "English", ru: "Русский", zh: "中文", es: "Español"};
+        langSelect.querySelector(".currentValue").textContent = langNames[currentLang] || "English";
+        
+        langSelect._langHandler = function(e) {
+            if (e.target.classList.contains("itemChild")) {
+                const value = e.target.dataset.value;
+                langSelect.querySelector(".currentValue").textContent = langNames[value] || "English";
+                localStorage.setItem("language", value);
+                // Здесь можно добавить логику смены языка интерфейса
+                console.log("Language changed to:", value);
+            }
+        };
+        langSelect.addEventListener("click", langSelect._langHandler);
+    }
+};
+
+const functionWhenCloseAppInApp_settings_app_SettingsAppFontsAndLanguages = function () {
+    const fontSelect = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='fontFamily']");
+    if (fontSelect && fontSelect._fontHandler) {
+        fontSelect.removeEventListener("click", fontSelect._fontHandler);
+        delete fontSelect._fontHandler;
+    }
+    
+    const fontSizeRange = document.getElementById("inputRangeFontSize");
+    if (fontSizeRange && fontSizeRange._sizeHandler) {
+        fontSizeRange.removeEventListener("input", fontSizeRange._sizeHandler);
+        delete fontSizeRange._sizeHandler;
+    }
+    
+    const langSelect = document.querySelector("#app_SettingsAppFontsAndLanguages .select[name='language']");
+    if (langSelect && langSelect._langHandler) {
+        langSelect.removeEventListener("click", langSelect._langHandler);
+        delete langSelect._langHandler;
+    }
+};
+
+// Add to main objects
+functionWhenOpenAppInApp_settings.app_SettingsAppFontsAndLanguages = functionWhenOpenAppInApp_settings_app_SettingsAppFontsAndLanguages;
+functionWhenCloseAppInApp_settings.app_SettingsAppFontsAndLanguages = functionWhenCloseAppInApp_settings_app_SettingsAppFontsAndLanguages;

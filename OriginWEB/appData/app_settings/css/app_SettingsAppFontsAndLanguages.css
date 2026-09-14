@@ -1,0 +1,8 @@
+#app_SettingsAppFontsAndLanguages .select {
+    width: 200px;
+}
+
+#app_SettingsAppFontsAndLanguages input[type="range"] {
+    width: calc(100% - 40px);
+    margin-left: 20px;
+}

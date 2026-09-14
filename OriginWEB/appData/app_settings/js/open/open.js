@@ -7,12 +7,14 @@ document
 .getElementById("app_settings")
 .querySelectorAll(".settingsItem")
 .forEach((item) => {
-    if (!item.dataset.openappid) return;
+    const openAppId = item.dataset.openappid || item.dataset.openAppId;
+    if (!openAppId) return;
     item.addEventListener("click", settingsItemEvent_app_settings);
 });
 
 function settingsItemEvent_app_settings(e) {
-    const target = document.getElementById(e.currentTarget.dataset.openappid);
+    const openAppId = e.currentTarget.dataset.openappid || e.currentTarget.dataset.openAppId;
+    const target = document.getElementById(openAppId);
 
     if (target.dataset.requestpassword === "1") {
         showPasswordScreen(
